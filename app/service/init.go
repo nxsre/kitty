@@ -20,6 +20,7 @@ func Init() {
 	orm.RegisterDataBase("default", "mysql", "root:123456@/kitty?charset=utf8")
 	orm.SetMaxIdleConns("default", 30)
 	orm.SetMaxOpenConns("default", 30)
+	orm.Debug = true
 	orm.RegisterModel(&model.JobInfo{}, &model.JobInfoHistory{}, &model.JobSnapshot{}, &model.JobSnapshotHistory{})
 	ormer = orm.NewOrm()
 	initService()

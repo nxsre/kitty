@@ -8,11 +8,13 @@
 
     <!-- 新 Bootstrap 核心 CSS 文件 -->
     <link rel="stylesheet" href="/static/css/bootstrap.min.css">
+    <link rel="stylesheet" href="/static/css/bootstrap-switch.min.css">
     <!-- jQuery文件。务必在bootstrap.min.js 之前引入 -->
     <script src="/static/js/jquery.min.js"></script>
 
     <!-- 最新的 Bootstrap 核心 JavaScript 文件 -->
     <script src="/static/js/bootstrap.min.js"></script>
+    <script src="/static/js/bootstrap-switch.min.js"></script>
 
 
     <link rel="shortcut icon" href="/static/img/favicon.ico">
@@ -102,7 +104,6 @@
                                     <span class="glyphicon glyphicon-search"></span> 搜索
                                 </button>
                             </form>
-                            {{.jobInfoList}}
                             <table class="table table-bordered">
                                 <thead>
                                 <tr>
@@ -128,7 +129,7 @@
                                         激活
                                     </th>
                                     <th>
-                                       详情
+                                        <span class="glyphicon glyphicon-eye-open"></span> 详情
                                     </th>
                                     <th>
                                         编辑
@@ -140,166 +141,66 @@
                                 </tr>
                                 </thead>
                                 <tbody>
+
+                                {{if .infos}}
+
+                                {{range $index,$job := .infos}}
                                 <tr>
                                     <td>
-                                        1
+                                        {{$index}}
                                     </td>
                                     <td>
-                                        TB - Monthly
+                                        {{$job.JobName}}
                                     </td>
                                     <td>
-                                        01/04/2012
+                                        {{$job.JobGroup}}
                                     </td>
                                     <td>
-                                        Default
+                                        {{$job.Cron}}
                                     </td>
                                     <td>
-                                        Default
+                                        {{$job.Url}}
                                     </td>
                                     <td>
-                                        1
+                                        {{$job.Params}}
                                     </td>
                                     <td>
-                                        TB - Monthly
+                                        {{if eq 1 $job.Active}}
+                                        <input type="checkbox" data-on-text="已激活" data-off-text="未激活"
+                                               data-on-color="info" data-off-color="danger" data-size="mini"
+                                               name="my-checkbox" checked/>
+                                        {{else}}
+                                        <input type="checkbox" data-on-text="已激活" data-off-text="未激活"
+                                               data-on-color="info" data-off-color="danger" data-size="mini"
+                                               name="my-checkbox"/>
+                                        {{end}}
+
                                     </td>
                                     <td>
-                                        01/04/2012
+                                        <button type="button" class="btn btn-primary btn-sm">
+                                            <span class="glyphicon glyphicon-eye-open">详情</span>
+                                        </button>
                                     </td>
                                     <td>
-                                        Default
+                                        <button type="button" class="btn btn-warning btn-sm">
+                                            <span class="glyphicon glyphicon-pencil">修改</span>
+                                        </button>
                                     </td>
                                     <td>
-                                        Default
+                                        <button type="button" class="btn btn-danger btn-sm">
+                                            <span class="glyphicon glyphicon-trash">删除</span>
+                                        </button>
                                     </td>
                                 </tr>
-                                <tr class="success">
-                                    <td>
-                                        1
-                                    </td>
-                                    <td>
-                                        TB - Monthly
-                                    </td>
-                                    <td>
-                                        01/04/2012
-                                    </td>
-                                    <td>
-                                        Approved
-                                    </td>
-                                    <td>
-                                        Default
-                                    </td>
-                                    <td>
-                                        1
-                                    </td>
-                                    <td>
-                                        TB - Monthly
-                                    </td>
-                                    <td>
-                                        01/04/2012
-                                    </td>
-                                    <td>
-                                        Default
-                                    </td>
-                                    <td>
-                                        Default
-                                    </td>
+                                {{end}}
+
+
+                                {{else}}
+                                <tr>
+                                    <td colspan="10" style="text-align: center;">暂无任务信息</td>
                                 </tr>
-                                <tr class="error">
-                                    <td>
-                                        2
-                                    </td>
-                                    <td>
-                                        TB - Monthly
-                                    </td>
-                                    <td>
-                                        02/04/2012
-                                    </td>
-                                    <td>
-                                        Declined
-                                    </td>
-                                    <td>
-                                        Default
-                                    </td>
-                                    <td>
-                                        1
-                                    </td>
-                                    <td>
-                                        TB - Monthly
-                                    </td>
-                                    <td>
-                                        01/04/2012
-                                    </td>
-                                    <td>
-                                        Default
-                                    </td>
-                                    <td>
-                                        Default
-                                    </td>
-                                </tr>
-                                <tr class="warning">
-                                    <td>
-                                        3
-                                    </td>
-                                    <td>
-                                        TB - Monthly
-                                    </td>
-                                    <td>
-                                        03/04/2012
-                                    </td>
-                                    <td>
-                                        Pending
-                                    </td>
-                                    <td>
-                                        Default
-                                    </td>
-                                    <td>
-                                        1
-                                    </td>
-                                    <td>
-                                        TB - Monthly
-                                    </td>
-                                    <td>
-                                        01/04/2012
-                                    </td>
-                                    <td>
-                                        Default
-                                    </td>
-                                    <td>
-                                        Default
-                                    </td>
-                                </tr>
-                                <tr class="info">
-                                    <td>
-                                        4
-                                    </td>
-                                    <td>
-                                        TB - Monthly
-                                    </td>
-                                    <td>
-                                        04/04/2012
-                                    </td>
-                                    <td>
-                                        Call in to confirm
-                                    </td>
-                                    <td>
-                                        Default
-                                    </td>
-                                    <td>
-                                        1
-                                    </td>
-                                    <td>
-                                        TB - Monthly
-                                    </td>
-                                    <td>
-                                        01/04/2012
-                                    </td>
-                                    <td>
-                                        Default
-                                    </td>
-                                    <td>
-                                        Default
-                                    </td>
-                                </tr>
+                                {{end}}
+
                                 </tbody>
                             </table>
                         </div>
@@ -333,6 +234,19 @@
 
 
 </div>
+<script type="application/javascript">
+
+    $(function () {
+
+        $("[name='my-checkbox']").bootstrapSwitch({
+            onSwitchChange: function (e, state) {
+                alert(e);
+                alert(state);
+            }
+        });
+    });
+</script>
+
 
 </body>
 
