@@ -46,6 +46,8 @@ type JobSnapshot struct {
 	State       int    // 执行状态
 	Result      string // 执行结果
 	TimeConsume int64  // 任务耗时
+	CreateTime time.Time // 任务创建时间
+	UpdateTime time.Time // 任务更新时间
 }
 
 // 任务快照历史
@@ -61,5 +63,7 @@ type JobSnapshotHistory struct {
 	State       int    // 执行状态
 	Result      string // 执行结果
 	TimeConsume int64  // 任务耗时
+	CreateTime time.Time // 任务创建时间
+	UpdateTime time.Time // 任务更新时间
 }
 
