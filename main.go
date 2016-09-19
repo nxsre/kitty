@@ -13,6 +13,7 @@ func main() {
 	beego.SetStaticPath("static","assets")
 	beego.SetViewsPath("views")
 	beego.Router("/jobinfo/list",&controller.JobInfoController{},"*:List")
+	beego.Router("/jobinfo/add",&controller.JobInfoController{},"get:ToAdd")
 	beego.Run()
 
 

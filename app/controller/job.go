@@ -9,9 +9,17 @@ type JobInfoController struct {
 	beego.Controller
 }
 
+// 查询任务列表
 func (this *JobInfoController)List() {
 
 	infos,_ := service.JobInfoService.List()
 	this.Data["infos"] = infos
-	this.TplName = "jobinfo/info.html"
+	this.TplName = "jobinfo/list.html"
+}
+
+// 跳转到新增任务页面
+func (this *JobInfoController)ToAdd()  {
+
+	this.TplName = "jobinfo/add.html"
+
 }
