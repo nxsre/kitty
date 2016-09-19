@@ -13,5 +13,5 @@ func (this *JobInfoController)List() {
 
 	infos,_ := service.JobInfoService.List()
 	this.Data["infos"] = infos
-	this.TplName = "job/job_info.html"
+	this.TplName = "jobinfo/info.html"
 }
