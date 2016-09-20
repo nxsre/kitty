@@ -9,6 +9,9 @@
     <!-- 新 Bootstrap 核心 CSS 文件 -->
     <link rel="stylesheet" href="/static/css/bootstrap.min.css">
     <link rel="stylesheet" href="/static/css/bootstrap-switch.min.css">
+    <!-- FormValidation CSS file -->
+    <link rel="stylesheet" href="/static/formvalidation/dist/css/formValidation.min.css">
+    <link href="/static/icheck-1.x/skins/flat/blue.css" rel="stylesheet">
     <!-- jQuery文件。务必在bootstrap.min.js 之前引入 -->
     <script src="/static/js/jquery.min.js"></script>
 
@@ -16,8 +19,13 @@
     <script src="/static/js/bootstrap.min.js"></script>
     <script src="/static/js/bootstrap-switch.min.js"></script>
 
-    <link href="/static/icheck-1.x/skins/flat/blue.css" rel="stylesheet">
+
     <script src="/static/icheck-1.x/icheck.min.js"></script>
+
+    <!-- FormValidation plugin and the class supports validating Bootstrap form -->
+    <script src="/static/formvalidation/dist/js/formValidation.min.js"></script>
+    <script src="/static/formvalidation/dist/js/framework/bootstrap.min.js"></script>
+    <script src="/static/js/jobinfo/add.js"></script>
 
 
     <link rel="shortcut icon" href="/static/img/favicon.ico">
@@ -96,25 +104,27 @@
 
                     <div class="row clearfix">
                         <div class="col-md-12 column">
-                            <form class="form-horizontal" role="form">
+                            <form id="addFrom" class="form-horizontal" role="form">
                                 <div class="form-group">
                                     <label for="JobName" class="col-sm-4 control-label">任务名称</label>
                                     <div class="col-sm-4">
-                                        <input type="text" class="form-control" id="JobName" PLACEHOLDER="请输入任务名称..." />
+                                        <input type="text" class="form-control" name="JobName" id="JobName" PLACEHOLDER="请输入任务名称..."/>
                                     </div>
                                 </div>
 
                                 <div class="form-group">
                                     <label for="JobGroup" class="col-sm-4 control-label">任务分组</label>
                                     <div class="col-sm-4">
-                                        <input type="text" name="JobGroup" class="form-control" id="JobGroup" placeholder="请输入任务分组..." />
+                                        <input type="text" name="JobGroup" class="form-control" id="JobGroup"
+                                               placeholder="请输入任务分组..."/>
                                     </div>
                                 </div>
 
                                 <div class="form-group">
                                     <label for="Cron" class="col-sm-4 control-label">Cron表达式</label>
                                     <div class="col-sm-4">
-                                        <input type="text" name="Cron" class="form-control" id="Cron" placeholder="请输入Cron表达式..."/>
+                                        <input type="text" name="Cron" class="form-control" id="Cron"
+                                               placeholder="请输入Cron表达式..."/>
                                     </div>
                                 </div>
 
@@ -122,29 +132,32 @@
                                 <div class="form-group">
                                     <label for="Url" class="col-sm-4 control-label">目标服务器URL</label>
                                     <div class="col-sm-4">
-                                        <input type="text" name="Url" class="form-control" id="Url" placeholder="请输入目标服务器URL..." />
+                                        <input type="text" name="Url" class="form-control" id="Url"
+                                               placeholder="请输入目标服务器URL..."/>
                                     </div>
                                 </div>
 
                                 <div class="form-group">
                                     <label for="Params" class="col-sm-4 control-label">参数</label>
                                     <div class="col-sm-4">
-                                        <input type="text" name="Params" class="form-control" id="Params" placeholder="请输入目标服务器URL参数..." />
+                                        <input type="text" name="Params" class="form-control" id="Params"
+                                               placeholder="请输入目标服务器URL参数..."/>
                                     </div>
                                 </div>
 
                                 <div class="form-group">
-                                    <label  class="col-sm-4 control-label">是否激活</label>
+                                    <label class="col-sm-4 control-label">是否激活</label>
                                     <div class="col-sm-4">
                                         <input type="radio" name="iCheck" checked>&nbsp;否
-                                        <input type="radio" name="iCheck" >&nbsp;是
+                                        <input type="radio" name="iCheck">&nbsp;是
                                     </div>
                                 </div>
 
                                 <div class="form-group">
                                     <label for="Phone" class="col-sm-4 control-label">负责人手机号码</label>
                                     <div class="col-sm-4">
-                                        <input type="text" name="Phone" class="form-control" id="Phone" placeholder="请输入负责人手机号码..." />
+                                        <input type="text" name="Phone" class="form-control" id="Phone"
+                                               placeholder="请输入负责人手机号码..."/>
                                     </div>
                                 </div>
 
@@ -152,21 +165,21 @@
                                 <div class="form-group">
                                     <label for="Remark" class="col-sm-4 control-label">备注</label>
                                     <div class="col-sm-4">
-                                        <input type="text" name="Remark" class="form-control" id="Remark" placeholder="请输入备注信息..." />
+                                        <textarea  class="form-control" id="Remark" placeholder="请输入备注信息..."></textarea>
+
                                     </div>
                                 </div>
 
                                 <div class="form-group">
                                     <div class="col-sm-offset-4 col-sm-10">
-                                        <button type="submit" class="btn btn-default">保存</button>&nbsp;
-                                        <button type="submit" class="btn btn-primary">取消</button>
+                                        <button id="btnSave"  class="btn btn-default">保存</button>
+                                        &nbsp;
+                                        <button  class="btn btn-primary">取消</button>
                                     </div>
                                 </div>
                             </form>
                         </div>
                     </div>
-
-
 
 
                 </div>
@@ -200,26 +213,14 @@
 
     $(function () {
 
-        $("[name='my-checkbox']").bootstrapSwitch({
-            onSwitchChange: function (e, state) {
-                alert(e);
-                alert(state);
-                return false;
-            }
-        });
-    });
-
-</script>
-
-
-<script>
-    $(document).ready(function(){
         $('input').iCheck({
             checkboxClass: 'icheckbox_flat-blue',
             radioClass: 'iradio_flat-blue'
         });
     });
+
 </script>
+
 
 </body>
 
