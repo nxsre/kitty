@@ -1,4 +1,5 @@
 /**
+ * 新建任务
  * Created by dongtian on 16/9/20.
  */
 
@@ -17,12 +18,44 @@ var JobInfo = {
 
                 var formvalidation = $('#addFrom').data('formValidation');
                 var valid = formvalidation.isValid();
-                if (valid == true) {
-                    alert("true");
-                } else {
-                    alert("false");
+                if (valid == false) {
+                    return false;
                 }
+
+                JobInfo.ctrl.addJob();
+                return false;
             });
+        },
+
+        addJob: function () {
+            var formDat = $('#addFrom').serialize();
+            layer.load(2);
+            $.ajax({
+                url: '/jobinfo/add',
+                cache: false,
+                data: formDat,
+                dataType: 'json',
+                type: 'POST',
+
+                error: function (req, status, err) {
+                    layer.closeAll('loading');
+                    layer.alert('提交失败,请重试!', {icon: 5});
+                },
+                success: function (data) {
+                    layer.closeAll('loading');
+                    if (data.success == true) {
+
+                        layer.msg('保存成功', function () {
+                            window.location.href = "/jobinfo/list";
+                        });
+
+                    }else {
+                        layer.msg(data.message, {icon: 5});
+                    }
+                }
+
+            });
+
         },
 
         initValidation: function () {
@@ -43,7 +76,7 @@ var JobInfo = {
                             stringLength: {
                                 min: 3,
                                 max: 30,
-                                message: '任务名称必须介于3~32字符之间!'
+                                message: '任务名称必须介于3至32字符!'
                             },
                             regexp: {
                                 regexp: /^[a-zA-Z0-9_]+$/,
@@ -51,10 +84,40 @@ var JobInfo = {
                             }
                         }
                     },
-                    password: {
+                    JobGroup: {
                         validators: {
                             notEmpty: {
-                                message: 'The password is required'
+                                message: '任务分组不能为空!'
+                            },
+                            stringLength: {
+                                min: 3,
+                                max: 30,
+                                message: '任务分组必须介于3至32字符!'
+                            }
+                        }
+                    },
+                    Url: {
+                        validators: {
+                            notEmpty: {
+                                message: '目标服务器地址Url不能为空!'
+                            },
+                            regexp: {
+                                regexp: /^(http|https):\/\/(\d+\.){3}(\d+)(:\d+)?(\S)*$/,
+                                message: '目标服务器地址Url格式不正确!'
+                            }
+                        }
+                    },
+                    Cron: {
+                        validators: {
+                            notEmpty: {
+                                message: 'Cron表达式不能为空!'
+                            }
+                        }
+                    },
+                    Params: {
+                        validators: {
+                            notEmpty: {
+                                message: '目标服务器地址参数不能为空!'
                             }
                         }
                     }
