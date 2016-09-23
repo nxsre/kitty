@@ -27,3 +27,12 @@ func (this *JobInfoController)ToAdd() {
 func (this *JobInfoController)Add() {
 
 }
+
+type HomeController struct {
+	beego.Controller
+}
+
+func (this * HomeController) Index() {
+
+	this.TplName = "index.html";
+}

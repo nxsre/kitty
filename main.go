@@ -10,11 +10,11 @@ func main() {
 
 	// 初始化服务
 	service.Init()
-	beego.SetStaticPath("static","assets")
+	beego.SetStaticPath("static", "assets")
 	beego.SetViewsPath("views")
-	beego.Router("/jobinfo/list",&controller.JobInfoController{},"*:List")
-	beego.Router("/jobinfo/add",&controller.JobInfoController{},"get:ToAdd")
+	beego.Router("/", &controller.HomeController{}, "*:Index")
+	beego.Router("/jobinfo/list", &controller.JobInfoController{}, "*:List")
+	beego.Router("/jobinfo/add", &controller.JobInfoController{}, "get:ToAdd")
 	beego.Run()
-
 
 }
