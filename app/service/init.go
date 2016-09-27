@@ -21,7 +21,7 @@ func Init() {
 	orm.SetMaxIdleConns("default", 30)
 	orm.SetMaxOpenConns("default", 30)
 	orm.Debug = true
-	orm.RegisterModel(&model.JobInfo{}, &model.JobInfoHistory{}, &model.JobSnapshot{}, &model.JobSnapshotHistory{})
+	orm.RegisterModel(new(model.JobInfo), new(model.JobInfoHistory), new(model.JobSnapshot), new(model.JobSnapshotHistory))
 	ormer = orm.NewOrm()
 	initService()
 

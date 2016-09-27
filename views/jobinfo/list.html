@@ -15,6 +15,8 @@
     <!-- 最新的 Bootstrap 核心 JavaScript 文件 -->
     <script src="/static/js/bootstrap.min.js"></script>
     <script src="/static/js/bootstrap-switch.min.js"></script>
+    <script src="/static/layer-v2.4/layer/layer.js"></script>
+    <script src="/static/js/jobinfo/list.js"></script>
 
 
     <link rel="shortcut icon" href="/static/img/favicon.ico">
@@ -36,16 +38,16 @@
                 <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
                     <ul class="nav navbar-nav">
                         <li class="active">
-                            <a href="#">任务列表</a>
+                            <a href="/jobinfo/list">任务列表</a>
                         </li>
                         <li>
-                            <a href="#">任务执行列表</a>
+                            <a href="/">任务执行列表</a>
                         </li>
                         <li>
-                            <a href="#">历史任务列表</a>
+                            <a href="/">历史任务列表</a>
                         </li>
                         <li>
-                            <a href="#">任务监控</a>
+                            <a href="/">任务监控</a>
                         </li>
 
                     </ul>
@@ -148,7 +150,7 @@
                                 {{if .infos}}
 
                                 {{range $index,$job := .infos}}
-                                <tr>
+                                <tr class="active">
                                     <td>
                                         {{$index}}
                                     </td>
@@ -171,26 +173,27 @@
                                         {{if eq 1 $job.Active}}
                                         <input type="checkbox" data-on-text="已激活" data-off-text="未激活"
                                                data-on-color="info" data-off-color="danger" data-size="mini"
-                                               name="my-checkbox" checked/>
+                                               name="Active" checked/>
                                         {{else}}
                                         <input type="checkbox" data-on-text="已激活" data-off-text="未激活"
                                                data-on-color="info" data-off-color="danger" data-size="mini"
-                                               name="my-checkbox"/>
+                                               name="Active"/>
                                         {{end}}
 
                                     </td>
                                     <td>
-                                        <button type="button" class="btn btn-primary btn-sm">
+                                        <a class="btn btn-primary btn-sm" href="/jobinfo/info?id={{$job.Id}}">
                                             <span class="glyphicon glyphicon-eye-open">详情</span>
-                                        </button>
+                                        </a>
                                     </td>
                                     <td>
-                                        <button type="button" class="btn btn-warning btn-sm">
+                                        <a href="/jobinfo/edit?id={{$job.Id}}" class="btn btn-warning btn-sm">
                                             <span class="glyphicon glyphicon-pencil">修改</span>
-                                        </button>
+                                        </a>
                                     </td>
                                     <td>
-                                        <button type="button" class="btn btn-danger btn-sm">
+                                        <button att="{{$job.Id}}" type="button"
+                                                class="btn btn-danger btn-sm btn_delJob">
                                             <span class="glyphicon glyphicon-trash">删除</span>
                                         </button>
                                     </td>
@@ -237,20 +240,6 @@
 
 
 </div>
-<script type="application/javascript">
-
-    $(function () {
-
-        $("[name='my-checkbox']").bootstrapSwitch({
-            onSwitchChange: function (e, state) {
-                alert(e);
-                alert(state);
-                return false;
-            }
-        });
-    });
-</script>
-
 
 </body>
 

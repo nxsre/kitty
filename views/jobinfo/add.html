@@ -48,16 +48,16 @@
                 <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
                     <ul class="nav navbar-nav">
                         <li class="active">
-                            <a href="#">任务列表</a>
+                            <a href="/jobinfo/list">任务列表</a>
                         </li>
                         <li>
-                            <a href="#">任务执行列表</a>
+                            <a href="/">任务执行列表</a>
                         </li>
                         <li>
-                            <a href="#">历史任务列表</a>
+                            <a href="/">历史任务列表</a>
                         </li>
                         <li>
-                            <a href="#">任务监控</a>
+                            <a href="/">任务监控</a>
                         </li>
 
                     </ul>
@@ -149,8 +149,8 @@
                                 <div class="form-group">
                                     <label class="col-sm-4 control-label">是否激活</label>
                                     <div class="col-sm-4">
-                                        <input type="radio" name="iCheck" checked>&nbsp;否
-                                        <input type="radio" name="iCheck">&nbsp;是
+                                        <input type="radio" name="Active" checked>&nbsp;否
+                                        <input type="radio" name="Active">&nbsp;是
                                     </div>
                                 </div>
 
@@ -166,7 +166,7 @@
                                 <div class="form-group">
                                     <label for="Remark" class="col-sm-4 control-label">备注</label>
                                     <div class="col-sm-4">
-                                        <textarea  class="form-control" id="Remark" placeholder="请输入备注信息..."></textarea>
+                                        <textarea  class="form-control" name="Remark" id="Remark" placeholder="请输入备注信息..."></textarea>
 
                                     </div>
                                 </div>
@@ -175,7 +175,7 @@
                                     <div class="col-sm-offset-4 col-sm-10">
                                         <button id="btnSave"  class="btn btn-default">保存</button>
                                         &nbsp;
-                                        <button  class="btn btn-primary">取消</button>
+                                        <a href="/jobinfo/list"  class="btn btn-primary">取消</a>
                                     </div>
                                 </div>
                             </form>

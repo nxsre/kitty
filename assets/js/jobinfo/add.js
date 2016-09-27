@@ -17,6 +17,7 @@ var JobInfo = {
             $('#btnSave').bind('click', function () {
 
                 var formvalidation = $('#addFrom').data('formValidation');
+                formvalidation.validate();
                 var valid = formvalidation.isValid();
                 if (valid == false) {
                     return false;
@@ -24,6 +25,11 @@ var JobInfo = {
 
                 JobInfo.ctrl.addJob();
                 return false;
+            });
+            
+            $('#btn_editJob').bind('click',function () {
+
+
             });
         },
 
@@ -49,7 +55,7 @@ var JobInfo = {
                             window.location.href = "/jobinfo/list";
                         });
 
-                    }else {
+                    } else {
                         layer.msg(data.message, {icon: 5});
                     }
                 }
@@ -79,8 +85,8 @@ var JobInfo = {
                                 message: '任务名称必须介于3至32字符!'
                             },
                             regexp: {
-                                regexp: /^[a-zA-Z0-9_]+$/,
-                                message: '任务名称必须字母、数字、_ 之间!'
+                                regexp: /^[a-zA-Z0-9_\u4E00-\u9FA5]+$/,
+                                message: '任务名称必须中文、字母、数字、_ 之间!'
                             }
                         }
                     },
@@ -93,6 +99,10 @@ var JobInfo = {
                                 min: 3,
                                 max: 30,
                                 message: '任务分组必须介于3至32字符!'
+                            },
+                            regexp: {
+                                regexp: /^[a-zA-Z0-9_\u4E00-\u9FA5]+$/,
+                                message: '任务分组必须中文、字母、数字、_之间!'
                             }
                         }
                     },
