@@ -8,11 +8,15 @@
 
     <!-- 新 Bootstrap 核心 CSS 文件 -->
     <link rel="stylesheet" href="/static/css/bootstrap.min.css">
+    <link rel="stylesheet" href="/static/css/bootstrap-switch.min.css">
     <!-- jQuery文件。务必在bootstrap.min.js 之前引入 -->
     <script src="/static/js/jquery.min.js"></script>
 
     <!-- 最新的 Bootstrap 核心 JavaScript 文件 -->
     <script src="/static/js/bootstrap.min.js"></script>
+    <script src="/static/js/bootstrap-switch.min.js"></script>
+    <script src="/static/layer-v2.4/layer/layer.js"></script>
+    <script src="/static/js/jobinfo/list.js"></script>
 
 
     <link rel="shortcut icon" href="/static/img/favicon.ico">
@@ -28,22 +32,22 @@
                             data-target="#bs-example-navbar-collapse-1"><span
                             class="sr-only">Toggle navigation</span><span class="icon-bar"></span><span
                             class="icon-bar"></span><span class="icon-bar"></span></button>
-                    <a class="navbar-brand" href="#">统一任务调度系统</a>
+                    <a class="navbar-brand" href="/">统一任务调度系统</a>
                 </div>
 
                 <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
                     <ul class="nav navbar-nav">
                         <li>
-                            <a href="#">任务列表</a>
+                            <a href="/jobinfo/list">任务信息</a>
                         </li>
                         <li class="active">
-                            <a href="#" >任务执行列表</a>
+                            <a href="/jobsanpshot/list">任务执行信息</a>
                         </li>
                         <li>
-                            <a href="#">历史任务列表</a>
+                            <a href="/">历史任务信息</a>
                         </li>
                         <li>
-                            <a href="#">任务监控</a>
+                            <a href="/">任务监控</a>
                         </li>
 
                     </ul>
@@ -81,15 +85,160 @@
 
     <div class="row clearfix">
         <div class="col-md-12 column">
-            <h5>
-                任务信息列表
-            </h5>
-            <hr>
-            <table class="table">
-                
-            </table>
+            <div class="panel panel-primary">
+                <div class="panel-heading">
+                    <h3 class="panel-title">
+                        任务信息列表
+                    </h3>
+                </div>
+                <div class="panel-body">
+
+                    <div class="row clearfix">
+                        <div class="col-md-12 column">
+                            <form action="/jobinfo/list" method="post" class="navbar-form navbar-left" role="search">
+                                <div class="form-group">
+                                    <input type="text" class="form-control" placeholder="任务名称">
+                                </div>
+                                <div class="form-group">
+                                    <input type="text" class="form-control" placeholder="任务分组">
+                                </div>
+                                <button type="submit" class="btn btn-danger">
+                                    <span class="glyphicon glyphicon-search"></span> 搜索
+                                </button>
+                            </form>
+                            <a href="/jobinfo/add/" class="btn btn-success pull-right">
+                                <span class="glyphicon glyphicon-plus"></span> 新增任务
+                            </a>
+                            <table class="table table-bordered" style="word-break:break-all;">
+                                <thead>
+                                <tr>
+                                    <th>
+                                        编号
+                                    </th>
+                                    <th>
+                                        任务名称
+                                    </th>
+                                    <th>
+                                        任务分组
+                                    </th>
+                                    <th>
+                                        Cron表达式
+                                    </th>
+                                    <th>
+                                        目标服务器URL
+                                    </th>
+                                    <th>
+                                        目标服务器URL参数
+                                    </th>
+                                    <th>
+                                        激活
+                                    </th>
+                                    <th>
+                                        详情
+                                    </th>
+                                    <th>
+                                        编辑
+                                    </th>
+                                    <th>
+                                        删除
+                                    </th>
+
+                                </tr>
+                                </thead>
+                                <tbody>
+
+                                {{if .infos}}
+
+                                {{range $index,$job := .infos}}
+                                <tr class="active">
+                                    <td>
+                                        {{$index}}
+                                    </td>
+                                    <td>
+                                        {{$job.JobName}}
+                                    </td>
+                                    <td>
+                                        {{$job.JobGroup}}
+                                    </td>
+                                    <td>
+                                        {{$job.Cron}}
+                                    </td>
+                                    <td>
+                                        {{$job.Url}}
+                                    </td>
+                                    <td>
+                                        {{$job.Params}}
+                                    </td>
+                                    <td>
+                                        {{if eq 1 $job.Active}}
+                                        <input type="checkbox" data-on-text="已激活" data-off-text="未激活"
+                                               data-on-color="info" data-off-color="danger" data-size="mini"
+                                               name="Active" checked/>
+                                        {{else}}
+                                        <input type="checkbox" data-on-text="已激活" data-off-text="未激活"
+                                               data-on-color="info" data-off-color="danger" data-size="mini"
+                                               name="Active"/>
+                                        {{end}}
+
+                                    </td>
+                                    <td>
+                                        <a class="btn btn-primary btn-sm" href="/jobinfo/info?id={{$job.Id}}">
+                                            <span class="glyphicon glyphicon-eye-open">详情</span>
+                                        </a>
+                                    </td>
+                                    <td>
+                                        <a href="/jobinfo/edit?id={{$job.Id}}" class="btn btn-warning btn-sm">
+                                            <span class="glyphicon glyphicon-pencil">修改</span>
+                                        </a>
+                                    </td>
+                                    <td>
+                                        <button att="{{$job.Id}}" type="button"
+                                                class="btn btn-danger btn-sm btn_delJob">
+                                            <span class="glyphicon glyphicon-trash">删除</span>
+                                        </button>
+                                    </td>
+                                </tr>
+                                {{end}}
+
+
+                                {{else}}
+                                <tr>
+                                    <td colspan="10" style="text-align: center;">暂无任务信息</td>
+                                </tr>
+                                {{end}}
+
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+
+                </div>
+                <div class="panel-footer">
+                    <div class="row clearfix">
+                        <div class="col-md-12 column">
+                            <ul class="pagination">
+                                <li>
+                                    <a href="#">首页</a>
+                                </li>
+                                <li>
+                                    <a href="#">上一页</a>
+                                </li>
+                                <li>
+                                    <a href="#">下一页</a>
+                                </li>
+                                <li>
+                                    <a href="#">尾页</a>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
+
+
 </div>
 
 </body>

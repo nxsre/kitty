@@ -76,7 +76,6 @@ func (this *JobInfoController)Add() {
 
 
 // 修改
-
 func (this *JobInfoController)Edit() {
 
 	//
@@ -134,7 +133,8 @@ func (this *JobInfoController)Edit() {
 
 }
 
-func (this *JobInfoController)Info()  {
+// 详情
+func (this *JobInfoController)Info() {
 
 	id, _ := this.GetInt("id")
 	jobInfo, err := service.JobInfoService.FindJobInfoById(id)
@@ -148,7 +148,21 @@ func (this *JobInfoController)Info()  {
 		this.TplName = "jobinfo/info.html";
 	}
 
+}
+// 删除
+func (this *JobInfoController)Delete() {
+	result := common.Result{}
 
+	id, _ := this.GetInt("Id");
+	err := service.JobInfoService.DeleteJobInfoById(id)
+	if err != nil {
+		result.Message = "删除失败,请重试!"
+	} else {
+		result.Success = true
+		result.Message = "删除成功"
+	}
+
+	this.WriteJson(result)
 }
 
 type HomeController struct {
@@ -158,4 +172,25 @@ type HomeController struct {
 func (this *HomeController) Index() {
 
 	this.TplName = "index.html";
+}
+
+type JobSanpshotController struct {
+
+  BaseController
+}
+
+// 查询任务执行快照列表
+func (this *JobSanpshotController)List()  {
+
+	sanpshotList,err := service.JobSanpshotService.List(0)
+	if err!= nil {
+
+		this.TplName = "500.html"
+	} else {
+
+
+		this.Data["sanpshotList"] = sanpshotList
+		this.TplName = "jobsanpshot/list.html";
+	}
+
 }

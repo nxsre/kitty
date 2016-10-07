@@ -8,11 +8,25 @@
 
     <!-- 新 Bootstrap 核心 CSS 文件 -->
     <link rel="stylesheet" href="/static/css/bootstrap.min.css">
+    <link rel="stylesheet" href="/static/css/bootstrap-switch.min.css">
+    <!-- FormValidation CSS file -->
+    <link rel="stylesheet" href="/static/formvalidation/dist/css/formValidation.min.css">
+    <link href="/static/icheck-1.x/skins/flat/blue.css" rel="stylesheet">
     <!-- jQuery文件。务必在bootstrap.min.js 之前引入 -->
     <script src="/static/js/jquery.min.js"></script>
 
     <!-- 最新的 Bootstrap 核心 JavaScript 文件 -->
     <script src="/static/js/bootstrap.min.js"></script>
+    <script src="/static/js/bootstrap-switch.min.js"></script>
+
+
+    <script src="/static/icheck-1.x/icheck.min.js"></script>
+
+    <!-- FormValidation plugin and the class supports validating Bootstrap form -->
+    <script src="/static/formvalidation/dist/js/formValidation.min.js"></script>
+    <script src="/static/formvalidation/dist/js/framework/bootstrap.min.js"></script>
+    <script src="/static/layer-v2.4/layer/layer.js"></script>
+    <script src="/static/js/jobinfo/edit.js"></script>
 
 
     <link rel="shortcut icon" href="/static/img/favicon.ico">
@@ -28,22 +42,22 @@
                             data-target="#bs-example-navbar-collapse-1"><span
                             class="sr-only">Toggle navigation</span><span class="icon-bar"></span><span
                             class="icon-bar"></span><span class="icon-bar"></span></button>
-                    <a class="navbar-brand" href="#">统一任务调度系统</a>
+                    <a class="navbar-brand" href="/">统一任务调度系统</a>
                 </div>
 
                 <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
                     <ul class="nav navbar-nav">
-                        <li>
-                            <a href="#">任务列表</a>
-                        </li>
                         <li class="active">
-                            <a href="#" >任务执行列表</a>
+                            <a href="/jobinfo/list">任务信息</a>
                         </li>
                         <li>
-                            <a href="#">历史任务列表</a>
+                            <a href="/">任务执行信息</a>
                         </li>
                         <li>
-                            <a href="#">任务监控</a>
+                            <a href="/">历史任务信息</a>
+                        </li>
+                        <li>
+                            <a href="/">任务监控</a>
                         </li>
 
                     </ul>
@@ -81,15 +95,131 @@
 
     <div class="row clearfix">
         <div class="col-md-12 column">
-            <h5>
-                任务信息列表
-            </h5>
-            <hr>
-            <table class="table">
-                
-            </table>
+            <div class="panel panel-primary">
+                <div class="panel-heading">
+                    <h3 class="panel-title">
+                       任务详情信息
+                    </h3>
+                </div>
+                <div class="panel-body">
+
+                    <div class="row clearfix">
+                        <div class="col-md-12 column">
+                            <form id="editForm" class="form-horizontal" role="form">
+                                <input type="hidden" name="Id" value="{{.jobInfo.Id}}">
+                                <div class="form-group">
+                                    <label for="JobName" class="col-sm-4 control-label">任务名称</label>
+                                    <div class="col-sm-4">
+                                        <input type="text" readonly="readonly" value="{{.jobInfo.JobName}}"
+                                               class="form-control" name="JobName" id="JobName"
+                                               PLACEHOLDER="请输入任务名称..."/>
+                                    </div>
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="JobGroup" class="col-sm-4 control-label">任务分组</label>
+                                    <div class="col-sm-4">
+                                        <input type="text" value="{{.jobInfo.JobGroup}}" name="JobGroup"
+                                               class="form-control" id="JobGroup"
+                                               readonly="readonly" placeholder="请输入任务分组..."/>
+                                    </div>
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="Cron" class="col-sm-4 control-label">Cron表达式</label>
+                                    <div class="col-sm-4">
+                                        <input type="text" name="Cron" class="form-control" id="Cron"
+                                            readonly="readonly"   value="{{.jobInfo.Cron}}" placeholder="请输入Cron表达式..."/>
+                                    </div>
+                                </div>
+
+
+                                <div class="form-group">
+                                    <label for="Url" class="col-sm-4 control-label">目标服务器URL</label>
+                                    <div class="col-sm-4">
+                                        <input type="text" name="Url" class="form-control" id="Url"
+                                           readonly="readonly"    value="{{.jobInfo.Url}}" placeholder="请输入目标服务器URL..."/>
+                                    </div>
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="Params" class="col-sm-4 control-label">参数</label>
+                                    <div class="col-sm-4">
+                                        <input type="text" name="Params" class="form-control" id="Params"
+                                            readonly="readonly"   value="{{.jobInfo.Params}}" placeholder="请输入目标服务器URL参数..."/>
+                                    </div>
+                                </div>
+
+                                <div class="form-group">
+                                    <label class="col-sm-4 control-label">是否激活</label>
+                                    <div class="col-sm-4">
+                                        {{if eq 0 .jobInfo.Active}}
+                                        <input type="radio" value="0" name="Active" readonly="readonly" checked>&nbsp;否
+                                        <input type="radio" value="1" name="Active" readonly="readonly">&nbsp;是
+                                        {{else}}
+                                        <input type="radio" value="0" name="Active" readonly="readonly">&nbsp;否
+                                        <input type="radio" value="1" name="Active" readonly="readonly" checked>&nbsp;是
+                                        {{end}}
+
+                                    </div>
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="Phone" class="col-sm-4 control-label">负责人手机号码</label>
+                                    <div class="col-sm-4">
+                                        <input type="text" name="Phone" class="form-control" id="Phone"
+                                           readonly="readonly"    value="{{.jobInfo.Phone}}" placeholder="请输入负责人手机号码..."/>
+                                    </div>
+                                </div>
+
+
+                                <div class="form-group">
+                                    <label for="Remark" class="col-sm-4 control-label">备注</label>
+                                    <div class="col-sm-4">
+                                        <textarea class="form-control" name="Remark" id="Remark"
+                                           readonly="readonly"  placeholder="请输入备注信息...">{{.jobInfo.Remark}}</textarea>
+
+                                    </div>
+                                </div>
+
+                                <div class="form-group">
+                                    <div class="col-sm-offset-4 col-sm-10">
+
+                                        <a href="/jobinfo/list" class="btn btn-primary">返回</a>
+                                    </div>
+                                </div>
+
+                            </form>
+                        </div>
+                    </div>
+
+
+                </div>
+                <div class="panel-footer">
+                    <div class="row clearfix">
+                        <div class="col-md-12 column">
+                            <ul class="pagination">
+                                <li>
+                                    <a href="#">首页</a>
+                                </li>
+                                <li>
+                                    <a href="#">上一页</a>
+                                </li>
+                                <li>
+                                    <a href="#">下一页</a>
+                                </li>
+                                <li>
+                                    <a href="#">尾页</a>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
+
+
 </div>
 
 </body>

@@ -10,7 +10,7 @@ type jobInfoService struct {
 
 func (this *jobInfoService)List() ([]model.JobInfo, error) {
 	var infos []model.JobInfo
-	_, err := ormer.QueryTable("job_info").OrderBy("-create_time").All(&infos)
+	_, err := ormer.QueryTable("job_info").Filter("state", 0).OrderBy("-create_time").All(&infos)
 	return infos, err
 }
 
@@ -48,6 +48,13 @@ func (this *jobInfoService)UpdateJobInfo(id int, url, cron, params, phone, remar
 
 }
 
+func (this *jobInfoService)DeleteJobInfoById(id int) error {
+
+	jobInfo := model.JobInfo{Id:id}
+	_, err := ormer.Delete(&jobInfo)
+	return err
+}
+
 type jobHistoryService struct {
 
 }
@@ -55,6 +62,18 @@ type jobHistoryService struct {
 type jobSanpshotService struct {
 
 }
+
+// 查询任务执行快照列表
+func (this *jobSanpshotService)List(state int)([]model.JobSnapshot,error)  {
+
+	var sanpshotList []model.JobSnapshot
+
+	_,err := ormer.QueryTable("job_snapshot").Filter("state",state).All(&sanpshotList)
+
+	return  sanpshotList,err
+}
+
+
 
 type jobSanpshotHistoryService struct {
 

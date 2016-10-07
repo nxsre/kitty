@@ -26,7 +26,7 @@
     <script src="/static/formvalidation/dist/js/formValidation.min.js"></script>
     <script src="/static/formvalidation/dist/js/framework/bootstrap.min.js"></script>
     <script src="/static/layer-v2.4/layer/layer.js"></script>
-    <script src="/static/js/jobinfo/add.js"></script>
+    <script src="/static/js/jobinfo/edit.js"></script>
 
 
     <link rel="shortcut icon" href="/static/img/favicon.ico">
@@ -51,7 +51,7 @@
                             <a href="/jobinfo/list">任务信息</a>
                         </li>
                         <li>
-                            <a href="/jobsanpshot/list">任务执行信息</a>
+                            <a href="/">任务执行信息</a>
                         </li>
                         <li>
                             <a href="/">历史任务信息</a>
@@ -98,26 +98,30 @@
             <div class="panel panel-primary">
                 <div class="panel-heading">
                     <h3 class="panel-title">
-                        新增任务信息
+                        修改任务信息
                     </h3>
                 </div>
                 <div class="panel-body">
 
                     <div class="row clearfix">
                         <div class="col-md-12 column">
-                            <form id="addFrom" class="form-horizontal" role="form">
+                            <form id="editForm" class="form-horizontal" role="form">
+                                <input type="hidden" name="Id" value="{{.jobInfo.Id}}">
                                 <div class="form-group">
                                     <label for="JobName" class="col-sm-4 control-label">任务名称</label>
                                     <div class="col-sm-4">
-                                        <input type="text" class="form-control" name="JobName" id="JobName" PLACEHOLDER="请输入任务名称..."/>
+                                        <input type="text" readonly="readonly" value="{{.jobInfo.JobName}}"
+                                               class="form-control" name="JobName" id="JobName"
+                                               PLACEHOLDER="请输入任务名称..."/>
                                     </div>
                                 </div>
 
                                 <div class="form-group">
                                     <label for="JobGroup" class="col-sm-4 control-label">任务分组</label>
                                     <div class="col-sm-4">
-                                        <input type="text" name="JobGroup" class="form-control" id="JobGroup"
-                                               placeholder="请输入任务分组..."/>
+                                        <input type="text" value="{{.jobInfo.JobGroup}}" name="JobGroup"
+                                               class="form-control" id="JobGroup"
+                                               readonly="readonly" placeholder="请输入任务分组..."/>
                                     </div>
                                 </div>
 
@@ -125,7 +129,7 @@
                                     <label for="Cron" class="col-sm-4 control-label">Cron表达式</label>
                                     <div class="col-sm-4">
                                         <input type="text" name="Cron" class="form-control" id="Cron"
-                                               placeholder="请输入Cron表达式..."/>
+                                               value="{{.jobInfo.Cron}}" placeholder="请输入Cron表达式..."/>
                                     </div>
                                 </div>
 
@@ -134,7 +138,7 @@
                                     <label for="Url" class="col-sm-4 control-label">目标服务器URL</label>
                                     <div class="col-sm-4">
                                         <input type="text" name="Url" class="form-control" id="Url"
-                                               placeholder="请输入目标服务器URL..."/>
+                                               value="{{.jobInfo.Url}}" placeholder="请输入目标服务器URL..."/>
                                     </div>
                                 </div>
 
@@ -142,15 +146,21 @@
                                     <label for="Params" class="col-sm-4 control-label">参数</label>
                                     <div class="col-sm-4">
                                         <input type="text" name="Params" class="form-control" id="Params"
-                                               placeholder="请输入目标服务器URL参数..."/>
+                                               value="{{.jobInfo.Params}}" placeholder="请输入目标服务器URL参数..."/>
                                     </div>
                                 </div>
 
                                 <div class="form-group">
                                     <label class="col-sm-4 control-label">是否激活</label>
                                     <div class="col-sm-4">
-                                        <input type="radio" name="Active" checked>&nbsp;否
-                                        <input type="radio" name="Active">&nbsp;是
+                                        {{if eq 0 .jobInfo.Active}}
+                                        <input type="radio" value="0" name="Active" readonly="readonly" checked>&nbsp;否
+                                        <input type="radio" value="1" name="Active" readonly="readonly">&nbsp;是
+                                        {{else}}
+                                        <input type="radio" value="0" name="Active" readonly="readonly">&nbsp;否
+                                        <input type="radio" value="1" name="Active" readonly="readonly" checked>&nbsp;是
+                                        {{end}}
+
                                     </div>
                                 </div>
 
@@ -158,7 +168,7 @@
                                     <label for="Phone" class="col-sm-4 control-label">负责人手机号码</label>
                                     <div class="col-sm-4">
                                         <input type="text" name="Phone" class="form-control" id="Phone"
-                                               placeholder="请输入负责人手机号码..."/>
+                                               value="{{.jobInfo.Phone}}" placeholder="请输入负责人手机号码..."/>
                                     </div>
                                 </div>
 
@@ -166,16 +176,17 @@
                                 <div class="form-group">
                                     <label for="Remark" class="col-sm-4 control-label">备注</label>
                                     <div class="col-sm-4">
-                                        <textarea  class="form-control" name="Remark" id="Remark" placeholder="请输入备注信息..."></textarea>
+                                        <textarea class="form-control" name="Remark" id="Remark"
+                                                  placeholder="请输入备注信息...">{{.jobInfo.Remark}}</textarea>
 
                                     </div>
                                 </div>
 
                                 <div class="form-group">
                                     <div class="col-sm-offset-4 col-sm-10">
-                                        <button id="btnSave"  class="btn btn-default">保存</button>
+                                        <button id="btnSave" class="btn btn-default">保存</button>
                                         &nbsp;
-                                        <a href="/jobinfo/list"  class="btn btn-primary">取消</a>
+                                        <a href="/jobinfo/list" class="btn btn-primary">取消</a>
                                     </div>
                                 </div>
                             </form>
@@ -210,18 +221,6 @@
 
 
 </div>
-<script type="application/javascript">
-
-    $(function () {
-
-        $('input').iCheck({
-            checkboxClass: 'icheckbox_flat-blue',
-            radioClass: 'iradio_flat-blue'
-        });
-    });
-
-</script>
-
 
 </body>
 

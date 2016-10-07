@@ -18,6 +18,11 @@ func main() {
 	beego.Router("/jobinfo/add", &controller.JobInfoController{}, "post:Add")
 	beego.Router("/jobinfo/edit", &controller.JobInfoController{}, "*:Edit")
 	beego.Router("/jobinfo/info",&controller.JobInfoController{},"*:Info")
+	beego.Router("/jobinfo/delete",&controller.JobInfoController{},"*:Delete")
+
+	beego.Router("/jobsanpshot/list",&controller.JobSanpshotController{},"*:List")
+
+
 	beego.Run()
 
 }
