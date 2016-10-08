@@ -21,7 +21,7 @@ func main() {
 	beego.Router("/jobinfo/delete",&controller.JobInfoController{},"*:Delete")
 
 	beego.Router("/jobsanpshot/list",&controller.JobSanpshotController{},"*:List")
-
+	beego.Router("/jobsanpshot/info",&controller.JobSanpshotController{},"*:Info")
 
 	beego.Run()
 

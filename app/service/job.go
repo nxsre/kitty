@@ -73,6 +73,13 @@ func (this *jobSanpshotService)List(state int)([]model.JobSnapshot,error)  {
 	return  sanpshotList,err
 }
 
+func (this *jobSanpshotService)FindJobSanpshotById(id ,state int)(model.JobSnapshot,error)  {
+	var jobSnapshot model.JobSnapshot
+
+	err:= ormer.QueryTable("job_snapshot").Filter("id",id).Filter("state",state).One(&jobSnapshot)
+	return  jobSnapshot,err
+}
+
 
 
 type jobSanpshotHistoryService struct {

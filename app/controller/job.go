@@ -190,7 +190,21 @@ func (this *JobSanpshotController)List()  {
 
 
 		this.Data["sanpshotList"] = sanpshotList
-		this.TplName = "jobsanpshot/list.html";
+		this.TplName = "jobsanpshot/list.html"
+	}
+
+}
+
+func (this *JobSanpshotController)Info() {
+	id,_ := this.GetInt("id")
+
+	jobSnapshot,err := service.JobSanpshotService.FindJobSanpshotById(id,0)
+
+	if err != nil {
+		this.TplName = "500.html"
+	}else {
+		this.Data["jobSnapshot"] = jobSnapshot
+		this.TplName = "jobsanpshot/info.html"
 	}
 
 }

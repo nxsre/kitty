@@ -106,11 +106,11 @@
                     <div class="row clearfix">
                         <div class="col-md-12 column">
                             <form id="editForm" class="form-horizontal" role="form">
-                                <input type="hidden" name="Id" value="{{.jobInfo.Id}}">
+                                <input type="hidden" name="Id" value="{{.jobSnapshot.Id}}">
                                 <div class="form-group">
                                     <label for="JobName" class="col-sm-4 control-label">任务名称</label>
                                     <div class="col-sm-4">
-                                        <input type="text" readonly="readonly" value="{{.jobInfo.JobName}}"
+                                        <input type="text" readonly="readonly" value="{{.jobSnapshot.JobName}}"
                                                class="form-control" name="JobName" id="JobName"
                                                PLACEHOLDER="请输入任务名称..."/>
                                     </div>
@@ -119,7 +119,7 @@
                                 <div class="form-group">
                                     <label for="JobGroup" class="col-sm-4 control-label">任务分组</label>
                                     <div class="col-sm-4">
-                                        <input type="text" value="{{.jobInfo.JobGroup}}" name="JobGroup"
+                                        <input type="text" value="{{.jobSnapshot.JobGroup}}" name="JobGroup"
                                                class="form-control" id="JobGroup"
                                                readonly="readonly" placeholder="请输入任务分组..."/>
                                     </div>
@@ -129,7 +129,7 @@
                                     <label for="Cron" class="col-sm-4 control-label">Cron表达式</label>
                                     <div class="col-sm-4">
                                         <input type="text" name="Cron" class="form-control" id="Cron"
-                                            readonly="readonly"   value="{{.jobInfo.Cron}}" placeholder="请输入Cron表达式..."/>
+                                            readonly="readonly"   value="{{.jobSnapshot.Cron}}" placeholder="请输入Cron表达式..."/>
                                     </div>
                                 </div>
 
@@ -138,7 +138,7 @@
                                     <label for="Url" class="col-sm-4 control-label">目标服务器URL</label>
                                     <div class="col-sm-4">
                                         <input type="text" name="Url" class="form-control" id="Url"
-                                           readonly="readonly"    value="{{.jobInfo.Url}}" placeholder="请输入目标服务器URL..."/>
+                                           readonly="readonly"    value="{{.jobSnapshot.Url}}" placeholder="请输入目标服务器URL..."/>
                                     </div>
                                 </div>
 
@@ -146,38 +146,51 @@
                                     <label for="Params" class="col-sm-4 control-label">参数</label>
                                     <div class="col-sm-4">
                                         <input type="text" name="Params" class="form-control" id="Params"
-                                            readonly="readonly"   value="{{.jobInfo.Params}}" placeholder="请输入目标服务器URL参数..."/>
+                                            readonly="readonly"   value="{{.jobSnapshot.Params}}" placeholder="请输入目标服务器URL参数..."/>
                                     </div>
                                 </div>
 
                                 <div class="form-group">
-                                    <label class="col-sm-4 control-label">是否激活</label>
+                                    <label class="col-sm-4 control-label">任务执行状态</label>
                                     <div class="col-sm-4">
-                                        {{if eq 0 .jobInfo.Active}}
-                                        <input type="radio" value="0" name="Active" readonly="readonly" checked>&nbsp;否
-                                        <input type="radio" value="1" name="Active" readonly="readonly">&nbsp;是
-                                        {{else}}
-                                        <input type="radio" value="0" name="Active" readonly="readonly">&nbsp;否
-                                        <input type="radio" value="1" name="Active" readonly="readonly" checked>&nbsp;是
+                                        {{if eq 0 .jobSnapshot.State}}
+                                        <input type="text"  class="form-control"
+                                               readonly="readonly"   value="准备就绪" />
+
+                                        {{else if eq 1 .jobSnapshot.State}}
+                                        <input type="text"  class="form-control"
+                                               readonly="readonly"   value="正在调用" />
+
+                                        {{else if eq 2 .jobSnapshot.State}}
+                                        <input type="text"  class="form-control"
+                                               readonly="readonly"   value="正在执行中" />
+
+                                        {{else if eq 3 .jobSnapshot.State}}
+                                        <input type="text" class="form-control"
+                                               readonly="readonly"   value="执行成功" />
+
+                                        {{else if eq 4 .jobSnapshot.State}}
+                                        <input type="text"  class="form-control"
+                                               readonly="readonly"   value="执行失败" />
+
                                         {{end}}
-
                                     </div>
                                 </div>
 
                                 <div class="form-group">
-                                    <label for="Phone" class="col-sm-4 control-label">负责人手机号码</label>
+                                    <label  class="col-sm-4 control-label">任务耗时(秒)</label>
                                     <div class="col-sm-4">
-                                        <input type="text" name="Phone" class="form-control" id="Phone"
-                                           readonly="readonly"    value="{{.jobInfo.Phone}}" placeholder="请输入负责人手机号码..."/>
+                                        <input type="text" name="TimeConsume" class="form-control"
+                                           readonly="readonly"    value="{{.jobSnapshot.TimeConsume}}" />
                                     </div>
                                 </div>
 
 
                                 <div class="form-group">
-                                    <label for="Remark" class="col-sm-4 control-label">备注</label>
+                                    <label for="Detail" class="col-sm-4 control-label">任务执行详情</label>
                                     <div class="col-sm-4">
-                                        <textarea class="form-control" name="Remark" id="Remark"
-                                           readonly="readonly"  placeholder="请输入备注信息...">{{.jobInfo.Remark}}</textarea>
+                                        <textarea class="form-control" name="Detail" id="Detail"
+                                           readonly="readonly">{{.jobSnapshot.Detail}}</textarea>
 
                                     </div>
                                 </div>
@@ -185,7 +198,7 @@
                                 <div class="form-group">
                                     <div class="col-sm-offset-4 col-sm-10">
 
-                                        <a href="/jobinfo/list" class="btn btn-primary">返回</a>
+                                        <a href="/jobsanpshot/list" class="btn btn-primary">返回</a>
                                     </div>
                                 </div>
 
@@ -198,20 +211,7 @@
                 <div class="panel-footer">
                     <div class="row clearfix">
                         <div class="col-md-12 column">
-                            <ul class="pagination">
-                                <li>
-                                    <a href="#">首页</a>
-                                </li>
-                                <li>
-                                    <a href="#">上一页</a>
-                                </li>
-                                <li>
-                                    <a href="#">下一页</a>
-                                </li>
-                                <li>
-                                    <a href="#">尾页</a>
-                                </li>
-                            </ul>
+
                         </div>
                     </div>
                 </div>
