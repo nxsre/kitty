@@ -8,8 +8,14 @@ import (
 
 func main() {
 
-	// 初始化服务
+	// init all service
 	service.Init()
+	// init quartz module
+	//job.BootstrapJobManager()
+
+
+
+
 	beego.SetStaticPath("static", "assets")
 	beego.SetViewsPath("views")
 	beego.Router("/", &controller.HomeController{}, "*:Index")
