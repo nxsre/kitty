@@ -6,7 +6,7 @@ type JobInfo struct {
 	Id         int       // 主键
 	JobName    string    // 任务名称
 	JobGroup   string    // 任务分组
-	State      int	     // 状态  0 正常 1 删除
+	State      int       // 状态  0 正常 1 删除
 	Params     string    // 任务参数
 	Cron       string    // cron 表达式
 	Url        string    // 任务目标地址
@@ -21,7 +21,7 @@ type JobInfoHistory struct {
 	Id         int       // 主键
 	JobName    string    // 任务名称
 	JobGroup   string    // 任务分组
-	State      int	     // 状态  0 正常 1 删除
+	State      int       // 状态  0 正常 1 删除
 	Params     string    // 任务参数
 	Cron       string    // cron 表达式
 	Url        string    // 任务目标地址
@@ -36,6 +36,7 @@ type JobInfoHistory struct {
 // 任务快照
 type JobSnapshot struct {
 	Id          int       // 主键
+	JobId      int	     // 任务id
 	JobName     string    // 任务名称
 	JobGroup    string    //  任务分组
 	Params      string    // 参数

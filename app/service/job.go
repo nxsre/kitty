@@ -77,7 +77,7 @@ func (this *jobSnapshotService)List(state int)([]model.JobSnapshot,error)  {
 func (this *jobSnapshotService)FindJobSanpshotById(id ,state int)(model.JobSnapshot,error)  {
 	var jobSnapshot model.JobSnapshot
 
-	err:= ormer.QueryTable("job_snapshot").Filter("id",id).Filter("state",state).One(&jobSnapshot)
+	err:= ormer.QueryTable("job_snapshot").Filter("id",id).One(&jobSnapshot)
 	return  jobSnapshot,err
 }
 
@@ -99,8 +99,13 @@ func (this *jobSnapshotService)Add(jobSnapshot *model.JobSnapshot)  error {
 func (this *jobSnapshotService)Update(id,state int,detail string,updateTime time.Time)  error {
 
 
-
-
+	snapshot :=&model.JobSnapshot{
+		Id:id,
+		State:state,
+		Detail:detail,
+		UpdateTime:updateTime,
+	}
+	ormer.Update(snapshot,"state","detail","update_time")
 	return nil
 
 }
