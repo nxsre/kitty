@@ -117,7 +117,7 @@ func initExecute(jobInfo model.JobInfo, targetUrl string, nextTime time.Time) {
 
 func invokeJob(snapshot *model.JobSnapshot)  {
 
-	err := service.JobSnapshotService.Update(sanpshot)
+	err := service.JobSnapshotService.Update(sanpshot.Id)
 	if err!= nil {
 		return
 	}
@@ -133,6 +133,3 @@ func invokeJob(snapshot *model.JobSnapshot)  {
 type JobInvoker struct {
 
 }
-
-
-
