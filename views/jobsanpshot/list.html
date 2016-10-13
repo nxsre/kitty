@@ -172,15 +172,15 @@
                                     <td>
 
                                         {{if eq 0 $job.State}}
-                                        准备就绪
+                                        INIT
                                         {{else if eq 1 $job.State}}
-                                        正在调用
+                                        INVOKING
                                         {{else if eq 2 $job.State}}
-                                        正在执行中
+                                        EXECUTING
                                         {{else if eq 3 $job.State}}
-                                        执行成功
+                                        COMPLETING
                                         {{else if eq 4 $job.State}}
-                                        执行失败
+                                        ERROR
                                         {{end}}
 
                                     </td>

@@ -2,6 +2,7 @@ package service
 
 import (
 	"kitty/app/model"
+	"time"
 )
 
 type jobInfoService struct {
@@ -59,21 +60,21 @@ type jobHistoryService struct {
 
 }
 
-type jobSanpshotService struct {
+type jobSnapshotService struct {
 
 }
 
 // 查询任务执行快照列表
-func (this *jobSanpshotService)List(state int)([]model.JobSnapshot,error)  {
+func (this *jobSnapshotService)List(state int)([]model.JobSnapshot,error)  {
 
 	var sanpshotList []model.JobSnapshot
 
-	_,err := ormer.QueryTable("job_snapshot").Filter("state",state).All(&sanpshotList)
+	_,err := ormer.QueryTable("job_snapshot").All(&sanpshotList)
 
 	return  sanpshotList,err
 }
 
-func (this *jobSanpshotService)FindJobSanpshotById(id ,state int)(model.JobSnapshot,error)  {
+func (this *jobSnapshotService)FindJobSanpshotById(id ,state int)(model.JobSnapshot,error)  {
 	var jobSnapshot model.JobSnapshot
 
 	err:= ormer.QueryTable("job_snapshot").Filter("id",id).Filter("state",state).One(&jobSnapshot)
@@ -81,8 +82,32 @@ func (this *jobSanpshotService)FindJobSanpshotById(id ,state int)(model.JobSnaps
 }
 
 
+func (this *jobSnapshotService)Add(jobSnapshot *model.JobSnapshot)  error {
 
-type jobSanpshotHistoryService struct {
+
+	id,err := ormer.Insert(jobSnapshot)
+	if err!= nil {
+		return err
+	}
+
+	jobSnapshot.Id = int(id)
+
+	return nil
+
+}
+
+func (this *jobSnapshotService)Update(id,state int,detail string,updateTime time.Time)  error {
+
+
+
+
+	return nil
+
+}
+
+
+
+type jobSnapshotHistoryService struct {
 
 }
 

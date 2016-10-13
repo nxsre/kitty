@@ -10,8 +10,8 @@ var (
 	ormer orm.Ormer
 	JobInfoService *jobInfoService
 	JobHistoryService *jobHistoryService
-	JobSanpshotService *jobSanpshotService
-	JobSanpshotHistoryService *jobSanpshotHistoryService
+	JobSnapshotService *jobSnapshotService
+	JobSnapshotHistoryService *jobSnapshotHistoryService
 )
 
 func Init() {
@@ -29,7 +29,7 @@ func Init() {
 func initService() {
 	JobInfoService = &jobInfoService{}
 	JobHistoryService = &jobHistoryService{}
-	JobSanpshotService = &jobSanpshotService{}
-	JobSanpshotHistoryService = &jobSanpshotHistoryService{}
+	JobSnapshotService = &jobSnapshotService{}
+	JobSnapshotHistoryService = &jobSnapshotHistoryService{}
 
 }

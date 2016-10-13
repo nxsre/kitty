@@ -182,7 +182,7 @@ type JobSanpshotController struct {
 // 查询任务执行快照列表
 func (this *JobSanpshotController)List()  {
 
-	sanpshotList,err := service.JobSanpshotService.List(0)
+	sanpshotList,err := service.JobSnapshotService.List(0)
 	if err!= nil {
 
 		this.TplName = "500.html"
@@ -198,7 +198,7 @@ func (this *JobSanpshotController)List()  {
 func (this *JobSanpshotController)Info() {
 	id,_ := this.GetInt("id")
 
-	jobSnapshot,err := service.JobSanpshotService.FindJobSanpshotById(id,0)
+	jobSnapshot,err := service.JobSnapshotService.FindJobSanpshotById(id,0)
 
 	if err != nil {
 		this.TplName = "500.html"
