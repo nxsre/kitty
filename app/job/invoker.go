@@ -122,7 +122,7 @@ func initExecute(jobInfo model.JobInfo, targetUrl string, nextTime time.Time) {
 func invokeJob(snapshot *model.JobSnapshot) {
 
 	detail := snapshot.Detail + "\n【" + time.Now().Format("2006-01-02 15:04:05") + "】正在调用..."
-	err := service.JobSnapshotService.Update(snapshot.Id, 1, detail, time.Now())
+	err := service.JobSnapshotService.Update(snapshot.Id, 1, detail, time.Now(), "", 0)
 	if err != nil {
 		return
 	}
@@ -133,21 +133,99 @@ func invokeJob(snapshot *model.JobSnapshot) {
 		Params     :snapshot.Params,
 		Method     :"INVOKE",
 	}
-	body,_:=json.Marshal(req)
+	body, _ := json.Marshal(req)
 
-	res, err := http.Post(snapshot.Url,"application/json;charset=utf-8",bytes.NewReader(body))
+	res, err := http.Post(snapshot.Url, "application/json;charset=utf-8", bytes.NewReader(body))
 	if err != nil {
 
 		detail = detail + "\n【" + time.Now().Format("2006-01-02 15:04:05") + "】目标服务器不可用..."
-		service.JobSnapshotService.Update(snapshot.Id, 4, detail, time.Now())
+		service.JobSnapshotService.Update(snapshot.Id, 4, detail, time.Now(), "", 0)
 		return
 
 	} else {
 
-		res.Body.Close()
+		bys := make([]byte, 1024)
+		n, _ := res.Body.Read(bys)
+
+		body := common.Response{}
+		err = json.Unmarshal(bys[:n], &body)
+		if err != nil {
+			detail = detail + "\n【" + time.Now().Format("2006-01-02 15:04:05") + "】目标服务器不可用..."
+			service.JobSnapshotService.Update(snapshot.Id, 4, detail, time.Now(), "", 0)
+			return
+		} else {
+
+			if body.State == 4 {
+				detail = detail + "\n【" + time.Now().Format("2006-01-02 15:04:05") + "】目标服务器任务执行失败..."
+				service.JobSnapshotService.Update(snapshot.Id, 4, detail, time.Now(), "", 0)
+				return
+			} else if body.State == 2 {
+
+				detail = detail + "\n【" + time.Now().Format("2006-01-02 15:04:05") + "】目标服务器任务正在执行..."
+				service.JobSnapshotService.Update(snapshot.Id, 2, detail, time.Now(), "", 0)
+				snapshot.Detail = detail
+				checkExecutionJob(snapshot)
+
+			}
+
+		}
+
 	}
 
-	log.Println("snapshot:", snapshot)
+}
+
+func checkExecutionJob(snapshot *model.JobSnapshot) {
+
+	for {
+		select {
+		case <-time.After(time.Second * 10):
+			log.Println("**********任务检查**********", snapshot.Id, snapshot.JobId)
+			req := common.Request{
+				SnapshotId:snapshot.Id,
+				JobId:snapshot.JobId,
+				Params     :snapshot.Params,
+				Method     :"CHECK",
+			}
+
+			body, _ := json.Marshal(req)
+			detail := snapshot.Detail
+			res, err := http.Post(snapshot.Url, "application/json;charset=utf-8", bytes.NewReader(body))
+			if err != nil {
+
+				detail = detail + "\n【" + time.Now().Format("2006-01-02 15:04:05") + "】目标服务器不可用..."
+				service.JobSnapshotService.Update(snapshot.Id, 4, detail, time.Now(), "", 0)
+				return
+
+			} else {
+
+				bys := make([]byte, 1024)
+				n, _ := res.Body.Read(bys)
+
+				response := common.Response{}
+				err = json.Unmarshal(bys[:n], &response)
+				if err != nil {
+					detail = detail + "\n【" + time.Now().Format("2006-01-02 15:04:05") + "】目标服务器不可用..."
+					service.JobSnapshotService.Update(snapshot.Id, 4, detail, time.Now(), "", 0)
+					return
+				} else {
+
+					if response.State == 3 {
+						detail = detail + "\n【" + time.Now().Format("2006-01-02 15:04:05") + "】目标服务器任务已完成..."
+						service.JobSnapshotService.Update(snapshot.Id, 3, detail, time.Now(), response.Result, response.TimeConsume)
+						return
+					} else if response.State == 4 {
+
+						detail = detail + "\n【" + time.Now().Format("2006-01-02 15:04:05") + "】目标服务器任务执行失败..."
+						service.JobSnapshotService.Update(snapshot.Id, 4, detail, time.Now(), "", 0)
+						snapshot.Detail = detail
+
+					}
+
+				}
+
+			}
+		}
+	}
 
 }
 

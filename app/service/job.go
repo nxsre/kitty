@@ -96,7 +96,7 @@ func (this *jobSnapshotService)Add(jobSnapshot *model.JobSnapshot)  error {
 
 }
 
-func (this *jobSnapshotService)Update(id,state int,detail string,updateTime time.Time)  error {
+func (this *jobSnapshotService)Update(id,state int,detail string,updateTime time.Time,result string,timeConsume int64)  error {
 
 
 	snapshot :=&model.JobSnapshot{
@@ -105,7 +105,7 @@ func (this *jobSnapshotService)Update(id,state int,detail string,updateTime time
 		Detail:detail,
 		UpdateTime:updateTime,
 	}
-	ormer.Update(snapshot,"state","detail","update_time")
+	ormer.Update(snapshot,"state","detail","update_time","result","time_consume")
 	return nil
 
 }
