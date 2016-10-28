@@ -49,6 +49,13 @@ func (this *jobInfoService)UpdateJobInfo(id int, url, cron, params, phone, remar
 
 }
 
+func (this *jobInfoService)UpdateJobActive(id int, active int) error {
+	jobInfo := &model.JobInfo{Id:id, Active:active}
+	_, err := ormer.Update(jobInfo, "active")
+	return err
+
+}
+
 func (this *jobInfoService)DeleteJobInfoById(id int) error {
 
 	jobInfo := model.JobInfo{Id:id}
@@ -65,28 +72,26 @@ type jobSnapshotService struct {
 }
 
 // 查询任务执行快照列表
-func (this *jobSnapshotService)List(state int)([]model.JobSnapshot,error)  {
+func (this *jobSnapshotService)List(state int) ([]model.JobSnapshot, error) {
 
 	var sanpshotList []model.JobSnapshot
 
-	_,err := ormer.QueryTable("job_snapshot").All(&sanpshotList)
+	_, err := ormer.QueryTable("job_snapshot").All(&sanpshotList)
 
-	return  sanpshotList,err
+	return sanpshotList, err
 }
 
-func (this *jobSnapshotService)FindJobSanpshotById(id ,state int)(model.JobSnapshot,error)  {
+func (this *jobSnapshotService)FindJobSanpshotById(id, state int) (model.JobSnapshot, error) {
 	var jobSnapshot model.JobSnapshot
 
-	err:= ormer.QueryTable("job_snapshot").Filter("id",id).One(&jobSnapshot)
-	return  jobSnapshot,err
+	err := ormer.QueryTable("job_snapshot").Filter("id", id).One(&jobSnapshot)
+	return jobSnapshot, err
 }
 
+func (this *jobSnapshotService)Add(jobSnapshot *model.JobSnapshot) error {
 
-func (this *jobSnapshotService)Add(jobSnapshot *model.JobSnapshot)  error {
-
-
-	id,err := ormer.Insert(jobSnapshot)
-	if err!= nil {
+	id, err := ormer.Insert(jobSnapshot)
+	if err != nil {
 		return err
 	}
 
@@ -96,21 +101,18 @@ func (this *jobSnapshotService)Add(jobSnapshot *model.JobSnapshot)  error {
 
 }
 
-func (this *jobSnapshotService)Update(id,state int,detail string,updateTime time.Time,result string,timeConsume int64)  error {
+func (this *jobSnapshotService)Update(id, state int, detail string, updateTime time.Time, result string, timeConsume int64) error {
 
-
-	snapshot :=&model.JobSnapshot{
+	snapshot := &model.JobSnapshot{
 		Id:id,
 		State:state,
 		Detail:detail,
 		UpdateTime:updateTime,
 	}
-	ormer.Update(snapshot,"state","detail","update_time","result","time_consume")
+	ormer.Update(snapshot, "state", "detail", "update_time", "result", "time_consume")
 	return nil
 
 }
-
-
 
 type jobSnapshotHistoryService struct {
 

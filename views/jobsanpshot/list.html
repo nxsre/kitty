@@ -169,21 +169,35 @@
                                     <td>
                                         {{$job.Params}}
                                     </td>
-                                    <td>
+
 
                                         {{if eq 0 $job.State}}
+                                    <td style="background-color:#2fa0ec">
                                         INIT
+                                    </td>
                                         {{else if eq 1 $job.State}}
+                                    <td style="background-color:#FFFF00">
                                         INVOKING
+                                    </td>
+
                                         {{else if eq 2 $job.State}}
+                                    <td style="background-color:#99FF99;">
                                         EXECUTING
+                                    </td>
+
                                         {{else if eq 3 $job.State}}
-                                        COMPLETING
+                                    <td style="background-color:#009f95;">
+                                        COMPLED
+                                    </td>
+
                                         {{else if eq 4 $job.State}}
+                                    <td style="background-color:#ff0039;">
                                         ERROR
+                                    </td>
+
                                         {{end}}
 
-                                    </td>
+
                                     <td>
                                         {{$job.TimeConsume}}(秒)
 

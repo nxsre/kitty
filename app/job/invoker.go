@@ -94,6 +94,7 @@ func invoke(jobId int, targetUrl, params string, nextTime time.Time) {
 
 }
 
+// 1.初始化
 func initExecute(jobInfo model.JobInfo, targetUrl string, nextTime time.Time) {
 
 	snapshot := &model.JobSnapshot{
@@ -174,6 +175,7 @@ func invokeJob(snapshot *model.JobSnapshot) {
 
 }
 
+//检查执行job情况
 func checkExecutionJob(snapshot *model.JobSnapshot) {
 
 	for {

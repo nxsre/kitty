@@ -4,6 +4,8 @@ import (
 	"kitty/app/service"
 	"github.com/astaxie/beego/validation"
 	"kitty/app/common"
+	"kitty/app/job"
+	"kitty/app/model"
 )
 
 type JobInfoController struct {
@@ -154,15 +156,74 @@ func (this *JobInfoController)Delete() {
 	result := common.Result{}
 
 	id, _ := this.GetInt("Id");
-	err := service.JobInfoService.DeleteJobInfoById(id)
+
+	jobInfo, err := service.JobInfoService.FindJobInfoById(id)
+
 	if err != nil {
-		result.Message = "删除失败,请重试!"
+		result.Message = "此任务不存在!"
 	} else {
-		result.Success = true
-		result.Message = "删除成功"
+
+		job.JobManager.RemoveJob(jobInfo)
+		err = service.JobInfoService.DeleteJobInfoById(id)
+		if err != nil {
+			result.Message = "删除失败,请重试!"
+		} else {
+			result.Success = true
+			result.Message = "删除成功"
+		}
+
+	}
+	this.WriteJson(result)
+}
+
+
+// 激活或者取消激活
+
+func (this *JobInfoController)Active() {
+	result := common.Result{}
+	active, _ := this.GetInt("active")
+	id, _ := this.GetInt("id")
+
+	jobInfo, err := service.JobInfoService.FindJobInfoById(id)
+	if err != nil {
+
+		job.JobManager.RemoveJob(model.JobInfo{Id:id})
+		result.Message = "此任务不存在!";
+	} else {
+
+		if active == 1 {
+
+			jobInfo.Active = 1
+			err = service.JobInfoService.UpdateJobActive(id, active)
+			if err == nil {
+				job.JobManager.AddJob(jobInfo)
+				result.Message = "成功"
+				result.Success = true
+			} else {
+				result.Message = "激活失败请重试!";
+
+			}
+
+		} else {
+			jobInfo.Active = 0
+
+			err = service.JobInfoService.UpdateJobActive(id, active)
+			if err == nil {
+				job.JobManager.RemoveJob(model.JobInfo{Id:id})
+
+				result.Message = "成功"
+				result.Success = true
+			} else {
+				result.Message = "取消激活失败请重试!";
+
+			}
+
+		}
+
 	}
 
 	this.WriteJson(result)
+
 }
 
 type HomeController struct {
@@ -175,19 +236,17 @@ func (this *HomeController) Index() {
 }
 
 type JobSanpshotController struct {
-
-  BaseController
+	BaseController
 }
 
 // 查询任务执行快照列表
-func (this *JobSanpshotController)List()  {
+func (this *JobSanpshotController)List() {
 
-	sanpshotList,err := service.JobSnapshotService.List(0)
-	if err!= nil {
+	sanpshotList, err := service.JobSnapshotService.List(0)
+	if err != nil {
 
 		this.TplName = "500.html"
 	} else {
-
 
 		this.Data["sanpshotList"] = sanpshotList
 		this.TplName = "jobsanpshot/list.html"
@@ -195,14 +254,15 @@ func (this *JobSanpshotController)List()  {
 
 }
 
+// 查询详情
 func (this *JobSanpshotController)Info() {
-	id,_ := this.GetInt("id")
+	id, _ := this.GetInt("id")
 
-	jobSnapshot,err := service.JobSnapshotService.FindJobSanpshotById(id,0)
+	jobSnapshot, err := service.JobSnapshotService.FindJobSanpshotById(id, 0)
 
 	if err != nil {
 		this.TplName = "500.html"
-	}else {
+	} else {
 		this.Data["jobSnapshot"] = jobSnapshot
 		this.TplName = "jobsanpshot/info.html"
 	}

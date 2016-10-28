@@ -171,13 +171,13 @@
                                     </td>
                                     <td>
                                         {{if eq 1 $job.Active}}
-                                        <input type="checkbox" data-on-text="已激活" data-off-text="未激活"
+                                        <input class="jobActive" type="checkbox" data-on-text="已激活" data-off-text="未激活"
                                                data-on-color="info" data-off-color="danger" data-size="mini"
-                                               name="Active" checked/>
+                                               value="{{$job.Id}}"     name="Active" checked/>
                                         {{else}}
-                                        <input type="checkbox" data-on-text="已激活" data-off-text="未激活"
+                                        <input class="jobActive" type="checkbox" data-on-text="已激活" data-off-text="未激活"
                                                data-on-color="info" data-off-color="danger" data-size="mini"
-                                               name="Active"/>
+                                            value="{{$job.Id}}"   name="Active"/>
                                         {{end}}
 
                                     </td>
@@ -240,6 +240,7 @@
 
 
 </div>
+
 
 </body>
 

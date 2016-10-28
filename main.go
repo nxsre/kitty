@@ -26,8 +26,12 @@ func main() {
 	beego.Router("/jobinfo/info", &controller.JobInfoController{}, "*:Info")
 	beego.Router("/jobinfo/delete", &controller.JobInfoController{}, "*:Delete")
 
+	beego.Router("/jobinfo/active", &controller.JobInfoController{}, "*:Active")
+
+
 	beego.Router("/jobsanpshot/list", &controller.JobSanpshotController{}, "*:List")
 	beego.Router("/jobsanpshot/info", &controller.JobSanpshotController{}, "*:Info")
+
 
 	beego.Run()
 

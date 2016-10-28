@@ -12,14 +12,15 @@ var JobInfoList = {
     },
     ctrl: {
         initEvent: function () {
+            $("[name='Active']").bootstrapSwitch();
 
-            $("[name='Active']").bootstrapSwitch({
-                onSwitchChange: function (e, state) {
-                    alert(e);
-                    alert(state);
-                    return false;
-                }
+            $("[name='Active']").on('switchChange.bootstrapSwitch', function (event, state) {
+                $(this).bootstrapSwitch('state', !state, true);
+                var id = $(this).val();
+                JobInfoList.ctrl.activeJob(id, state, $(this));
+
             });
+
 
             $('.btn_delJob').bind('click', function () {
 
@@ -37,6 +38,56 @@ var JobInfoList = {
             });
 
 
+        },
+
+        // 激活
+        activeJob: function (id, active, ele) {
+
+            var msg = "你确定要激活此任务吗";
+            var activeV = 1;
+            if (active == false) {
+                var msg = "你确定要取消此任务吗";
+                activeV = 0;
+            }
+            layer.msg(msg, {
+                time: 0 //不自动关闭
+                , btn: ['确定', '取消']
+                , icon: 6
+                , yes: function (index) {
+                    layer.close(index);
+                    var formDat = {"id": id, "active": activeV};
+
+                    $.ajax({
+                        url: '/jobinfo/active',
+                        cache: false,
+                        data: formDat,
+                        dataType: 'json',
+                        type: 'POST',
+
+                        error: function (req, status, err) {
+                            layer.closeAll('loading');
+                            layer.alert('提交失败,请重试!', {icon: 5});
+                        },
+                        success: function (data) {
+                            layer.closeAll('loading');
+                            if (data.success == true) {
+
+                                if (active == true) {
+                                    ele.bootstrapSwitch('state', true, true);
+                                } else {
+                                    ele.bootstrapSwitch('state', false, true);
+                                }
+
+                            } else {
+                                layer.msg(data.message, {icon: 5});
+                            }
+                        }
+
+                    });
+
+
+                }
+            });
         },
         deleteJobInfo: function (id) {
 
