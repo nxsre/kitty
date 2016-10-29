@@ -15,8 +15,23 @@ type JobInfoController struct {
 // 查询任务列表
 func (this *JobInfoController)List() {
 
-	infos, _ := service.JobInfoService.List()
-	this.Data["infos"] = infos
+	pageNo, _ := this.GetInt("pageNo", 1)
+	pageSize, _ := this.GetInt("pageSize", 10)
+
+	jobName := this.GetString("JobName")
+	groupName := this.GetString("GroupName")
+	infos, _ := service.JobInfoService.FindJobInfoListByPage(pageNo, pageSize, jobName, groupName)
+
+	count, _ := service.JobInfoService.FindJobInfoCountByState(0, jobName, groupName);
+
+
+	pager := &common.Pager{PageNo:pageNo, PageSize:pageSize}
+	pager.SetTotalCount(count)
+	pager.Data = infos
+
+	this.Data["pager"] = pager
+	this.Data["jobName"] = jobName
+	this.Data["groupName"] = groupName
 	this.TplName = "jobinfo/list.html"
 }
 

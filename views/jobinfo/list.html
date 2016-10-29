@@ -95,14 +95,17 @@
 
                     <div class="row clearfix">
                         <div class="col-md-12 column">
-                            <form action="/jobinfo/list" method="post" class="navbar-form navbar-left" role="search">
+                            <form id="searchForm" action="/jobinfo/list" method="post" class="navbar-form navbar-left" role="search">
+
+                                <input type="hidden" id="pageSize" name="pageSize" value="{{.pager.PageSize}}">
+                                <input type="hidden" id="pageNo" name="pageNo" value="{{.pager.PageNo}}">
                                 <div class="form-group">
-                                    <input type="text" class="form-control" placeholder="任务名称">
+                                    <input type="text" name="JobName" value="{{.jobName}}"  class="form-control" placeholder="任务名称">
                                 </div>
                                 <div class="form-group">
-                                    <input type="text" class="form-control" placeholder="任务分组">
+                                    <input type="text" name="GroupName" value="{{.groupName}}" class="form-control" placeholder="任务分组">
                                 </div>
-                                <button type="submit" class="btn btn-danger">
+                                <button type="submit" id="btn_submit" class="btn btn-danger">
                                     <span class="glyphicon glyphicon-search"></span> 搜索
                                 </button>
                             </form>
@@ -147,9 +150,8 @@
                                 </thead>
                                 <tbody>
 
-                                {{if .infos}}
-
-                                {{range $index,$job := .infos}}
+                                {{if .pager.Data}}
+                                {{range $index,$job := .pager.Data}}
                                 <tr class="active">
                                     <td>
                                         {{$index}}
@@ -173,11 +175,11 @@
                                         {{if eq 1 $job.Active}}
                                         <input class="jobActive" type="checkbox" data-on-text="已激活" data-off-text="未激活"
                                                data-on-color="info" data-off-color="danger" data-size="mini"
-                                               value="{{$job.Id}}"     name="Active" checked/>
+                                               value="{{$job.Id}}" name="Active" checked/>
                                         {{else}}
                                         <input class="jobActive" type="checkbox" data-on-text="已激活" data-off-text="未激活"
                                                data-on-color="info" data-off-color="danger" data-size="mini"
-                                            value="{{$job.Id}}"   name="Active"/>
+                                               value="{{$job.Id}}" name="Active"/>
                                         {{end}}
 
                                     </td>
@@ -215,24 +217,39 @@
 
                 </div>
                 <div class="panel-footer">
+                    {{ if gt .pager.TotalPage 1 }}
                     <div class="row clearfix">
+
                         <div class="col-md-12 column">
+
                             <ul class="pagination">
+
+                                {{ if ne .pager.PageNo 1 }}
                                 <li>
-                                    <a href="#">首页</a>
+                                    <a style="cursor: pointer;" onclick="JobInfoList.ctrl.pageFun('{{.pager.PageSize}}','1')">首页</a>
+                                </li>
+
+                                <li>
+                                    <a style="cursor: pointer;" onclick="JobInfoList.ctrl.pageFun('{{.pager.PageSize}}','{{sub .pager.PageNo 1 }}')">上一页</a>
+                                </li>
+                                {{end}}
+
+                                {{ if ne .pager.PageNo .pager.TotalPage }}
+                                <li>
+                                    <a  style="cursor: pointer;" onclick="JobInfoList.ctrl.pageFun('{{.pager.PageSize}}','{{inc .pager.PageNo 1 }}')">下一页</a>
                                 </li>
                                 <li>
-                                    <a href="#">上一页</a>
+                                    <a style="cursor: pointer;" onclick="JobInfoList.ctrl.pageFun('{{.pager.PageSize}}','{{.pager.TotalPage}}')">尾页</a>
                                 </li>
-                                <li>
-                                    <a href="#">下一页</a>
-                                </li>
-                                <li>
-                                    <a href="#">尾页</a>
-                                </li>
+                                {{end}}
                             </ul>
+
+
                         </div>
+
+
                     </div>
+                    {{end}}
                 </div>
             </div>
         </div>

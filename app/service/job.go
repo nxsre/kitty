@@ -9,6 +9,35 @@ type jobInfoService struct {
 
 }
 
+func (this *jobInfoService)FindJobInfoListByPage(pageNo, pageSize int, jobName, groupName string) ([]model.JobInfo, error) {
+	var infos []model.JobInfo
+	query := ormer.QueryTable("job_info").Filter("state", 0)
+	if jobName != "" {
+		query = query.Filter("job_name", jobName)
+	}
+
+	if groupName != "" {
+		query = query.Filter("job_group", groupName)
+	}
+	_, err := query.OrderBy("-create_time").Limit(pageSize, (pageNo - 1) * pageSize).All(&infos)
+	return infos, err
+}
+
+func (this *jobInfoService)FindJobInfoCountByState(state int, jobName, groupName string) (count int, err error) {
+
+	query := ormer.QueryTable("job_info").Filter("state", 0)
+	if jobName != "" {
+		query = query.Filter("job_name", jobName)
+	}
+
+	if groupName != "" {
+		query = query.Filter("job_group", groupName)
+	}
+
+	num, err := query.Count()
+	return int(num), err
+}
+
 func (this *jobInfoService)List() ([]model.JobInfo, error) {
 	var infos []model.JobInfo
 	_, err := ormer.QueryTable("job_info").Filter("state", 0).OrderBy("-create_time").All(&infos)

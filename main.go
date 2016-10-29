@@ -28,11 +28,23 @@ func main() {
 
 	beego.Router("/jobinfo/active", &controller.JobInfoController{}, "*:Active")
 
-
 	beego.Router("/jobsanpshot/list", &controller.JobSanpshotController{}, "*:List")
 	beego.Router("/jobsanpshot/info", &controller.JobSanpshotController{}, "*:Info")
 
-
+	beego.AddFuncMap("inc", inc)
+	beego.AddFuncMap("sub", sub)
 	beego.Run()
 
+}
+
+// 相加
+func inc(num, num2 int) (result int) {
+
+	return num + num2
+}
+
+// 相减
+func sub(num, num2 int) (result int) {
+
+	return num - num2
 }

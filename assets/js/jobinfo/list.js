@@ -37,6 +37,13 @@ var JobInfoList = {
 
             });
 
+            //
+            $('#btn_submit').click(function () {
+                $('#pageSize').val(10);
+                $('#pageNo').val(1);
+                $('#searchForm').submit();
+
+            });
 
         },
 
@@ -88,6 +95,15 @@ var JobInfoList = {
 
                 }
             });
+        },
+
+
+        pageFun: function (pageSize, pageNo) {
+
+            $('#pageSize').val(pageSize);
+            $('#pageNo').val(pageNo);
+            $('#searchForm').submit();
+
         },
         deleteJobInfo: function (id) {
 
