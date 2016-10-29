@@ -34,16 +34,16 @@
                 <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
                     <ul class="nav navbar-nav">
                         <li>
-                            <a href="#">任务列表</a>
+                            <a href="/jobinfo/list">任务信息</a>
                         </li>
                         <li>
-                            <a href="#">任务执行列表</a>
+                            <a href="/jobsanpshot/list">任务执行信息</a>
                         </li>
                         <li>
-                            <a href="#">历史任务列表</a>
+                            <a href="#">历史任务信息</a>
                         </li>
                         <li class="active">
-                            <a href="#">任务监控</a>
+                            <a href="/monitor">任务监控</a>
                         </li>
 
                     </ul>
@@ -80,14 +80,44 @@
 
 
     <div class="row clearfix">
-        <div class="col-md-12 column">
+        <div class="col-md-12 column center">
             <h5>
-                任务信息列表
+                任务监控信息列表
             </h5>
             <hr>
-            <table class="table">
-                
+
+            {{if .list}}
+
+               {{range $index,$job := .list}}
+
+            <table class="table table-bordered">
+                <tr >
+                    <td>任务名称</td>
+                </tr>
+                <tr class="active">
+                    <td>{{$job.Name}}</td>
+                </tr>
+
+                <tr >
+                    <td>任务分组</td>
+                </tr>
+                <tr class="active">
+                    <td>{{$job.Group}}</td>
+                </tr>
+
+                <tr >
+                    <td>下次触发时间</td>
+                </tr>
+                <tr class="active">
+                    <td>{{dateformat $job.Next  "2006-01-02 15:04:05" }}</td>
+                </tr>
             </table>
+
+              {{end}}
+            {{else}}
+               暂无数据...
+            {{end}}
+
         </div>
     </div>
 </div>

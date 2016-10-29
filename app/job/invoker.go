@@ -81,6 +81,11 @@ func (this *jobManager)RemoveJob(jobInfo model.JobInfo) error {
 
 }
 
+func (this *jobManager)List() ([]*quartz.Job, error) {
+
+	return this.qz.SnapshotJob()
+}
+
 func invoke(jobId int, targetUrl, params string, nextTime time.Time) {
 	jobInfo, err := service.JobInfoService.FindJobInfoById(jobId)
 	if err != nil || jobInfo.Active == 0 {

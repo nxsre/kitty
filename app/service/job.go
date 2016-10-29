@@ -40,7 +40,7 @@ func (this *jobInfoService)FindJobInfoCountByState(state int, jobName, groupName
 
 func (this *jobInfoService)List() ([]model.JobInfo, error) {
 	var infos []model.JobInfo
-	_, err := ormer.QueryTable("job_info").Filter("state", 0).OrderBy("-create_time").All(&infos)
+	_, err := ormer.QueryTable("job_info").Filter("state", 0).Filter("active",1).OrderBy("-create_time").All(&infos)
 	return infos, err
 }
 

@@ -118,7 +118,21 @@ func (this *JobInfoController)Edit() {
 
 		} else {
 
-			err := service.JobInfoService.UpdateJobInfo(id, url, cron, params, phone, remark);
+
+			info ,err := service.JobInfoService.FindJobInfoById(id)
+			if  err != nil {
+				result.Message ="此任务不存在!";
+				this.WriteJson(result)
+			}
+
+			info.Cron = cron
+			info.Params = params
+			info.Phone = phone
+			info.Url = url
+			info.Remark =remark
+			job.JobManager.ModifyJob(&info)
+
+			err = service.JobInfoService.UpdateJobInfo(id, url, cron, params, phone, remark);
 			if err != nil {
 				result.Message = "更新失败,请重试!"
 				this.WriteJson(result)
@@ -281,5 +295,21 @@ func (this *JobSanpshotController)Info() {
 		this.Data["jobSnapshot"] = jobSnapshot
 		this.TplName = "jobsanpshot/info.html"
 	}
+
+}
+
+type MonitorController struct {
+	BaseController
+}
+
+// 监控
+func (this *MonitorController)List()  {
+
+
+	list,_:= job.JobManager.List()
+
+	this.Data["list"]= list
+	this.TplName = "monitor/monitor.html"
+
 
 }

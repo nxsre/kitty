@@ -44,10 +44,6 @@ var EditJobInfo = {
                         validators: {
                             notEmpty: {
                                 message: '目标服务器地址Url不能为空!'
-                            },
-                            regexp: {
-                                regexp: /^(http|https):\/\/(\d+\.){3}(\d+)(:\d+)?(\S)*$/,
-                                message: '目标服务器地址Url格式不正确!'
                             }
                         }
                     },

@@ -31,6 +31,9 @@ func main() {
 	beego.Router("/jobsanpshot/list", &controller.JobSanpshotController{}, "*:List")
 	beego.Router("/jobsanpshot/info", &controller.JobSanpshotController{}, "*:Info")
 
+
+	beego.Router("/monitor/", &controller.MonitorController{}, "*:List")
+
 	beego.AddFuncMap("inc", inc)
 	beego.AddFuncMap("sub", sub)
 	beego.Run()
