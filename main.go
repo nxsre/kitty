@@ -28,8 +28,10 @@ func main() {
 
 	beego.Router("/jobinfo/active", &controller.JobInfoController{}, "*:Active")
 
-	beego.Router("/jobsanpshot/list", &controller.JobSanpshotController{}, "*:List")
-	beego.Router("/jobsanpshot/info", &controller.JobSanpshotController{}, "*:Info")
+	beego.Router("/jobsnapshot/list", &controller.JobSanpshotController{}, "*:List")
+	beego.Router("/jobsnapshot/info", &controller.JobSanpshotController{}, "*:Info")
+
+	beego.Router("/jobsnapshot/delete", &controller.JobSanpshotController{}, "*:Delete")
 
 
 	beego.Router("/monitor/", &controller.MonitorController{}, "*:List")

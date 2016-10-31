@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>kitty-统一任务调度系统</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+
+    <!-- 新 Bootstrap 核心 CSS 文件 -->
+    <link rel="stylesheet" href="/static/css/bootstrap.min.css">
+    <link rel="stylesheet" href="/static/css/bootstrap-switch.min.css">
+    <!-- FormValidation CSS file -->
+    <link rel="stylesheet" href="/static/formvalidation/dist/css/formValidation.min.css">
+    <link href="/static/icheck-1.x/skins/flat/blue.css" rel="stylesheet">
+    <!-- jQuery文件。务必在bootstrap.min.js 之前引入 -->
+    <script src="/static/js/jquery.min.js"></script>
+
+    <!-- 最新的 Bootstrap 核心 JavaScript 文件 -->
+    <script src="/static/js/bootstrap.min.js"></script>
+    <script src="/static/js/bootstrap-switch.min.js"></script>
+
+
+    <script src="/static/icheck-1.x/icheck.min.js"></script>
+
+    <!-- FormValidation plugin and the class supports validating Bootstrap form -->
+    <script src="/static/formvalidation/dist/js/formValidation.min.js"></script>
+    <script src="/static/formvalidation/dist/js/framework/bootstrap.min.js"></script>
+    <script src="/static/layer-v2.4/layer/layer.js"></script>
+    <script src="/static/js/jobinfo/add.js"></script>
+
+
+    <link rel="shortcut icon" href="/static/img/favicon.ico">
+
+</head>
+<body>
+<div class="container">
+    <div class="row clearfix">
+        <div class="col-md-12 column">
+            <nav class="navbar navbar-default" role="navigation">
+                <div class="navbar-header">
+                    <button type="button" class="navbar-toggle" data-toggle="collapse"
+                            data-target="#bs-example-navbar-collapse-1"><span
+                            class="sr-only">Toggle navigation</span><span class="icon-bar"></span><span
+                            class="icon-bar"></span><span class="icon-bar"></span></button>
+                    <a class="navbar-brand" href="/">统一任务调度系统</a>
+                </div>
+
+                <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+                    <ul class="nav navbar-nav">
+                        <li class="active">
+                            <a href="/jobinfo/list">任务信息</a>
+                        </li>
+                        <li>
+                            <a href="/jobsnapshot/list">任务执行信息</a>
+                        </li>
+                        <li>
+                            <a href="/">历史任务信息</a>
+                        </li>
+                        <li>
+                            <a href="/monitor">任务监控</a>
+                        </li>
+
+                    </ul>
+                    <ul class="nav navbar-nav navbar-right">
+                        <li>
+                            <a href="#">欢迎,超级管理员</a>
+                        </li>
+                        <li class="dropdown">
+                            <a href="#" class="dropdown-toggle" data-toggle="dropdown">Dropdown<strong
+                                    class="caret"></strong></a>
+                            <ul class="dropdown-menu">
+                                <li>
+                                    <a href="#">Action</a>
+                                </li>
+                                <li>
+                                    <a href="#">Another action</a>
+                                </li>
+                                <li>
+                                    <a href="#">Something else here</a>
+                                </li>
+                                <li class="divider">
+                                </li>
+                                <li>
+                                    <a href="#">Separated link</a>
+                                </li>
+                            </ul>
+                        </li>
+                    </ul>
+                </div>
+
+            </nav>
+        </div>
+    </div>
+
+
+    <div class="row clearfix">
+        <div class="col-md-12 column">
+            <div class="panel panel-primary">
+                <div class="panel-heading">
+                    <h3 class="panel-title">
+                        新增任务信息
+                    </h3>
+                </div>
+                <div class="panel-body">
+
+                    <div class="row clearfix">
+                        <div class="col-md-12 column">
+                            <form id="addFrom" class="form-horizontal" role="form">
+                                <div class="form-group">
+                                    <label for="JobName" class="col-sm-4 control-label">任务名称</label>
+                                    <div class="col-sm-4">
+                                        <input type="text" class="form-control" name="JobName" id="JobName" PLACEHOLDER="请输入任务名称..."/>
+                                    </div>
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="JobGroup" class="col-sm-4 control-label">任务分组</label>
+                                    <div class="col-sm-4">
+                                        <input type="text" name="JobGroup" class="form-control" id="JobGroup"
+                                               placeholder="请输入任务分组..."/>
+                                    </div>
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="Cron" class="col-sm-4 control-label">Cron表达式</label>
+                                    <div class="col-sm-4">
+                                        <input type="text" name="Cron" class="form-control" id="Cron"
+                                               placeholder="请输入Cron表达式..."/>
+                                    </div>
+                                </div>
+
+
+                                <div class="form-group">
+                                    <label for="Url" class="col-sm-4 control-label">目标服务器URL</label>
+                                    <div class="col-sm-4">
+                                        <input type="text" name="Url" class="form-control" id="Url"
+                                               placeholder="请输入目标服务器URL..."/>
+                                    </div>
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="Params" class="col-sm-4 control-label">参数</label>
+                                    <div class="col-sm-4">
+                                        <input type="text" name="Params" class="form-control" id="Params"
+                                               placeholder="请输入目标服务器URL参数..."/>
+                                    </div>
+                                </div>
+
+                                <div class="form-group">
+                                    <label class="col-sm-4 control-label">是否激活</label>
+                                    <div class="col-sm-4">
+                                        <input type="radio" name="Active" checked>&nbsp;否
+                                        <input type="radio" name="Active">&nbsp;是
+                                    </div>
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="Phone" class="col-sm-4 control-label">负责人手机号码</label>
+                                    <div class="col-sm-4">
+                                        <input type="text" name="Phone" class="form-control" id="Phone"
+                                               placeholder="请输入负责人手机号码..."/>
+                                    </div>
+                                </div>
+
+
+                                <div class="form-group">
+                                    <label for="Remark" class="col-sm-4 control-label">备注</label>
+                                    <div class="col-sm-4">
+                                        <textarea  class="form-control" name="Remark" id="Remark" placeholder="请输入备注信息..."></textarea>
+
+                                    </div>
+                                </div>
+
+                                <div class="form-group">
+                                    <div class="col-sm-offset-4 col-sm-10">
+                                        <button id="btnSave"  class="btn btn-default">保存</button>
+                                        &nbsp;
+                                        <a href="/jobinfo/list"  class="btn btn-primary">取消</a>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+
+
+                </div>
+                <div class="panel-footer">
+                    <div class="row clearfix">
+                        <div class="col-md-12 column">
+                            <ul class="pagination">
+                                <li>
+                                    <a href="#">首页</a>
+                                </li>
+                                <li>
+                                    <a href="#">上一页</a>
+                                </li>
+                                <li>
+                                    <a href="#">下一页</a>
+                                </li>
+                                <li>
+                                    <a href="#">尾页</a>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+</div>
+<script type="application/javascript">
+
+    $(function () {
+
+        $('input').iCheck({
+            checkboxClass: 'icheckbox_flat-blue',
+            radioClass: 'iradio_flat-blue'
+        });
+    });
+
+</script>
+
+
+</body>
+
+
+</html>

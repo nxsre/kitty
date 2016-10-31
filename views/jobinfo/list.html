@@ -41,7 +41,7 @@
                             <a href="/jobinfo/list">任务信息</a>
                         </li>
                         <li>
-                            <a href="/jobsanpshot/list">任务执行信息</a>
+                            <a href="/jobsnapshot/list">任务执行信息</a>
                         </li>
                         <li>
                             <a href="/">历史任务信息</a>
@@ -100,10 +100,12 @@
                                 <input type="hidden" id="pageSize" name="pageSize" value="{{.pager.PageSize}}">
                                 <input type="hidden" id="pageNo" name="pageNo" value="{{.pager.PageNo}}">
                                 <div class="form-group">
-                                    <input type="text" name="JobName" value="{{.jobName}}"  class="form-control" placeholder="任务名称">
+                                    <label for="jobname">任务名称:</label>
+                                    <input type="text" name="JobName" id="jobname" value="{{.jobName}}"  class="form-control" placeholder="任务名称">
                                 </div>
                                 <div class="form-group">
-                                    <input type="text" name="GroupName" value="{{.groupName}}" class="form-control" placeholder="任务分组">
+                                    <label for="groupName">任务分组:</label>
+                                    <input type="text" name="GroupName" id="groupName" value="{{.groupName}}" class="form-control" placeholder="任务分组">
                                 </div>
                                 <button type="submit" id="btn_submit" class="btn btn-danger">
                                     <span class="glyphicon glyphicon-search"></span> 搜索

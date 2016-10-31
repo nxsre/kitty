@@ -40,7 +40,7 @@ func (this *jobInfoService)FindJobInfoCountByState(state int, jobName, groupName
 
 func (this *jobInfoService)List() ([]model.JobInfo, error) {
 	var infos []model.JobInfo
-	_, err := ormer.QueryTable("job_info").Filter("state", 0).Filter("active",1).OrderBy("-create_time").All(&infos)
+	_, err := ormer.QueryTable("job_info").Filter("state", 0).Filter("active", 1).OrderBy("-create_time").All(&infos)
 	return infos, err
 }
 
@@ -110,7 +110,72 @@ func (this *jobSnapshotService)List(state int) ([]model.JobSnapshot, error) {
 	return sanpshotList, err
 }
 
-func (this *jobSnapshotService)FindJobSanpshotById(id, state int) (model.JobSnapshot, error) {
+func (this *jobSnapshotService)FindJobSnapshotInfoListByPage(pageNo, pageSize int, jobName, groupName string, state int) ([]model.JobSnapshot, error) {
+
+	var snapshotList []model.JobSnapshot
+
+	query := ormer.QueryTable("job_snapshot")
+
+	if jobName != "" {
+		query = query.Filter("job_name", jobName)
+	}
+
+	if groupName != "" {
+		query = query.Filter("job_group", groupName)
+	}
+
+	if state != -1 {
+		query = query.Filter("state", state)
+	}
+	_, err := query.OrderBy("-create_time").Limit(pageSize, (pageNo - 1) * pageSize).All(&snapshotList)
+
+	return snapshotList, err
+}
+
+// 获取和
+func (this *jobSnapshotService)FindJobSnapshotCount(jobName, groupName string, state int) (int, error) {
+
+	query := ormer.QueryTable("job_snapshot")
+
+	if jobName != "" {
+		query = query.Filter("job_name", jobName)
+	}
+
+	if groupName != "" {
+		query = query.Filter("job_group", groupName)
+	}
+
+	if state != -1 {
+		query = query.Filter("state", state)
+	}
+	count, err := query.Count()
+
+	return int(count), err
+}
+
+func (this *jobSnapshotService)FindJobInfoListByPage(pageNo, pageSize int, jobName, groupName string, state int) ([]model.JobSnapshot, error) {
+
+	var sanpshotList []model.JobSnapshot
+
+	query := ormer.QueryTable("job_snapshot")
+
+	if jobName != "" {
+		query = query.Filter("job_name", jobName)
+	}
+
+	if groupName != "" {
+		query = query.Filter("job_group", groupName)
+	}
+
+	if state != -1 {
+		query = query.Filter("state", state)
+	}
+	_, err := query.OrderBy("-create_time").Limit(pageSize, (pageNo - 1) * pageSize).All(&sanpshotList)
+
+	return sanpshotList, err
+}
+
+func (this *jobSnapshotService)FindJobSnapshotById(id, state int) (model.JobSnapshot, error) {
 	var jobSnapshot model.JobSnapshot
 
 	err := ormer.QueryTable("job_snapshot").Filter("id", id).One(&jobSnapshot)
@@ -141,6 +206,13 @@ func (this *jobSnapshotService)Update(id, state int, detail string, updateTime t
 	ormer.Update(snapshot, "state", "detail", "update_time", "result", "time_consume")
 	return nil
 
+}
+
+func (this *jobSnapshotService)DeleteJobSnapshotById(id int) error {
+
+	snapshot := &model.JobSnapshot{Id:id}
+	_, err := ormer.Delete(snapshot)
+	return err
 }
 
 type jobSnapshotHistoryService struct {

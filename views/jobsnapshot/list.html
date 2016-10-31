@@ -1,0 +1,329 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>kitty-统一任务调度系统</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+
+    <!-- 新 Bootstrap 核心 CSS 文件 -->
+    <link rel="stylesheet" href="/static/css/bootstrap.min.css">
+    <link rel="stylesheet" href="/static/css/bootstrap-switch.min.css">
+    <!-- jQuery文件。务必在bootstrap.min.js 之前引入 -->
+    <script src="/static/js/jquery.min.js"></script>
+
+    <!-- 最新的 Bootstrap 核心 JavaScript 文件 -->
+    <script src="/static/js/bootstrap.min.js"></script>
+    <script src="/static/js/bootstrap-switch.min.js"></script>
+    <script src="/static/layer-v2.4/layer/layer.js"></script>
+    <script src="/static/js/snapshot/list.js"></script>
+
+
+    <link rel="shortcut icon" href="/static/img/favicon.ico">
+
+</head>
+<body>
+<div class="container">
+    <div class="row clearfix">
+        <div class="col-md-12 column">
+            <nav class="navbar navbar-default" role="navigation">
+                <div class="navbar-header">
+                    <button type="button" class="navbar-toggle" data-toggle="collapse"
+                            data-target="#bs-example-navbar-collapse-1"><span
+                            class="sr-only">Toggle navigation</span><span class="icon-bar"></span><span
+                            class="icon-bar"></span><span class="icon-bar"></span></button>
+                    <a class="navbar-brand" href="/">统一任务调度系统</a>
+                </div>
+
+                <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+                    <ul class="nav navbar-nav">
+                        <li>
+                            <a href="/jobinfo/list">任务信息</a>
+                        </li>
+                        <li class="active">
+                            <a href="/jobsnapshot/list">任务执行信息</a>
+                        </li>
+                        <li>
+                            <a href="/">历史任务信息</a>
+                        </li>
+                        <li>
+                            <a href="/monitor">任务监控</a>
+                        </li>
+
+                    </ul>
+                    <ul class="nav navbar-nav navbar-right">
+                        <li>
+                            <a href="#">欢迎,超级管理员</a>
+                        </li>
+                        <li class="dropdown">
+                            <a href="#" class="dropdown-toggle" data-toggle="dropdown">Dropdown<strong
+                                    class="caret"></strong></a>
+                            <ul class="dropdown-menu">
+                                <li>
+                                    <a href="#">Action</a>
+                                </li>
+                                <li>
+                                    <a href="#">Another action</a>
+                                </li>
+                                <li>
+                                    <a href="#">Something else here</a>
+                                </li>
+                                <li class="divider">
+                                </li>
+                                <li>
+                                    <a href="#">Separated link</a>
+                                </li>
+                            </ul>
+                        </li>
+                    </ul>
+                </div>
+
+            </nav>
+        </div>
+    </div>
+
+
+    <div class="row clearfix">
+        <div class="col-md-12 column">
+            <div class="panel panel-primary">
+                <div class="panel-heading">
+                    <h3 class="panel-title">
+                        任务执行信息列表
+                    </h3>
+                </div>
+                <div class="panel-body">
+
+                    <div class="row clearfix">
+                        <div class="col-md-12 column">
+                            <form id="searchForm" action="/jobsnapshot/list" method="post"
+                                  class="navbar-form navbar-left" role="search">
+
+
+                                <input type="hidden" id="pageSize" name="pageSize" value="{{.pager.PageSize}}">
+                                <input type="hidden" id="pageNo" name="pageNo" value="{{.pager.PageNo}}">
+                                <div class="form-group">
+                                    <label for="jobname">任务名称:</label>
+                                    <input type="text" name="JobName" id="JobName" value="{{.jobName}}" class="form-control"
+                                           placeholder="任务名称">
+                                </div>
+                                <div class="form-group">
+                                    <label for="groupname">任务分组:</label>
+                                    <input type="text" name="GroupName" id="GroupName" value="{{.groupName}}" class="form-control"
+                                           placeholder="任务分组">
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="State">执行状态:</label>
+                                    <select id="State" class="form-control" name="State">
+                                        <option value="-1">全 部</option>
+                                        {{if eq 0 .State }}
+                                        <option value="0" selected>INIT</option>
+                                        {{else}}
+                                        <option value="0" >INIT</option>
+                                        {{end}}
+
+
+                                        {{if eq 1 .State }}
+                                        <option value="1" selected>INVOKING</option>
+                                        {{else}}
+                                        <option value="1">INVOKING</option>
+                                        {{end}}
+
+
+                                        {{if eq 2 .State }}
+                                        <option value="2" selected>EXECUTING</option>
+                                        {{else}}
+                                        <option value="2">EXECUTING</option>
+                                        {{end}}
+
+
+                                        {{if eq 3 .State }}
+                                        <option value="3" selected>COMPLED</option>
+                                        {{else}}
+                                        <option value="3">COMPLED</option>
+                                        {{end}}
+
+                                        {{if eq 4 .State }}
+                                        <option value="4" selected>ERROR</option>
+                                        {{else}}
+                                        <option value="4">ERROR</option>
+                                        {{end}}
+                                    </select>
+                                </div>
+                                &nbsp;&nbsp;
+                                <button type="submit" id="btn_submit" class="btn btn-danger">
+                                    <span class="glyphicon glyphicon-search"></span> 搜索
+                                </button>
+                            </form>
+                            <table class="table table-bordered" style="word-break:break-all;">
+                                <thead>
+                                <tr>
+                                    <th>
+                                        编号
+                                    </th>
+                                    <th>
+                                        任务名称
+                                    </th>
+                                    <th>
+                                        任务分组
+                                    </th>
+                                    <th>
+                                        Cron表达式
+                                    </th>
+                                    <th>
+                                        目标服务器URL
+                                    </th>
+                                    <th>
+                                        目标服务器URL参数
+                                    </th>
+                                    <th>
+                                        执行状态
+                                    </th>
+                                    <th>
+                                        任务耗时
+                                    </th>
+                                    <th>
+                                        详情
+                                    </th>
+                                    <th>
+                                        删除
+                                    </th>
+
+                                </tr>
+                                </thead>
+                                <tbody>
+
+                                {{if .pager.Data}}
+
+                                {{range $index,$job := .pager.Data}}
+                                <tr class="active">
+                                    <td>
+                                        {{$index}}
+                                    </td>
+                                    <td>
+                                        {{$job.JobName}}
+                                    </td>
+                                    <td>
+                                        {{$job.JobGroup}}
+                                    </td>
+                                    <td>
+                                        {{$job.Cron}}
+                                    </td>
+                                    <td>
+                                        {{$job.Url}}
+                                    </td>
+                                    <td>
+                                        {{$job.Params}}
+                                    </td>
+
+
+                                    {{if eq 0 $job.State}}
+                                    <td style="background-color:#2fa0ec">
+                                        INIT
+                                    </td>
+                                    {{else if eq 1 $job.State}}
+                                    <td style="background-color:#FFFF00">
+                                        INVOKING
+                                    </td>
+
+                                    {{else if eq 2 $job.State}}
+                                    <td style="background-color:#99FF99;">
+                                        EXECUTING
+                                    </td>
+
+                                    {{else if eq 3 $job.State}}
+                                    <td style="background-color:#009f95;">
+                                        COMPLED
+                                    </td>
+
+                                    {{else if eq 4 $job.State}}
+                                    <td style="background-color:#ff0039;">
+                                        ERROR
+                                    </td>
+
+                                    {{end}}
+
+
+                                    <td>
+                                        {{$job.TimeConsume}}(秒)
+
+                                    </td>
+                                    <td>
+                                        <a class="btn btn-primary btn-sm" href="/jobsnapshot/info?id={{$job.Id}}">
+                                            <span class="glyphicon glyphicon-eye-open">详情</span>
+                                        </a>
+                                    </td>
+
+                                    <td>
+                                        <button att="{{$job.Id}}" type="button"
+                                                class="btn btn-danger btn-sm btn_delJob">
+                                            <span class="glyphicon glyphicon-trash">删除</span>
+                                        </button>
+                                    </td>
+                                </tr>
+                                {{end}}
+
+
+                                {{else}}
+                                <tr>
+                                    <td colspan="10" style="text-align: center;">暂无任务信息</td>
+                                </tr>
+                                {{end}}
+
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+
+                </div>
+                <div class="panel-footer">
+                    {{ if gt .pager.TotalPage 1 }}
+                    <div class="row clearfix">
+
+                        <div class="col-md-12 column">
+
+                            <ul class="pagination">
+
+                                {{ if ne .pager.PageNo 1 }}
+                                <li>
+                                    <a style="cursor: pointer;"
+                                       onclick="JobSnapshotInfoList.ctrl.pageFun('{{.pager.PageSize}}','1')">首页</a>
+                                </li>
+
+                                <li>
+                                    <a style="cursor: pointer;"
+                                       onclick="JobSnapshotInfoList.ctrl.pageFun('{{.pager.PageSize}}','{{sub .pager.PageNo 1 }}')">上一页</a>
+                                </li>
+                                {{end}}
+
+                                {{ if ne .pager.PageNo .pager.TotalPage }}
+                                <li>
+                                    <a style="cursor: pointer;"
+                                       onclick="JobSnapshotInfoList.ctrl.pageFun('{{.pager.PageSize}}','{{inc .pager.PageNo 1 }}')">下一页</a>
+                                </li>
+                                <li>
+                                    <a style="cursor: pointer;"
+                                       onclick="JobSnapshotInfoList.ctrl.pageFun('{{.pager.PageSize}}','{{.pager.TotalPage}}')">尾页</a>
+                                </li>
+                                {{end}}
+                            </ul>
+
+
+                        </div>
+
+
+                    </div>
+                    {{end}}
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+</div>
+
+</body>
+
+
+</html>
