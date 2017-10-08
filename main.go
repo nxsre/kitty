@@ -2,9 +2,9 @@ package main
 
 import (
 	"github.com/astaxie/beego"
-	"kitty/app/service"
-	"kitty/app/controller"
-	"kitty/app/job"
+	"github.com/soopsio/kitty/app/controller"
+	"github.com/soopsio/kitty/app/job"
+	"github.com/soopsio/kitty/app/service"
 )
 
 func main() {
@@ -32,7 +32,6 @@ func main() {
 	beego.Router("/jobsnapshot/info", &controller.JobSanpshotController{}, "*:Info")
 
 	beego.Router("/jobsnapshot/delete", &controller.JobSanpshotController{}, "*:Delete")
-
 
 	beego.Router("/monitor/", &controller.MonitorController{}, "*:List")
 

@@ -1,7 +1,7 @@
 package service
 
 import (
-	"kitty/app/model"
+	"github.com/soopsio/kitty/app/model"
 	"time"
 )
 

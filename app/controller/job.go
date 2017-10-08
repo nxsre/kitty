@@ -1,11 +1,11 @@
 package controller
 
 import (
-	"kitty/app/service"
 	"github.com/astaxie/beego/validation"
-	"kitty/app/common"
-	"kitty/app/job"
-	"kitty/app/model"
+	"github.com/soopsio/kitty/app/common"
+	"github.com/soopsio/kitty/app/job"
+	"github.com/soopsio/kitty/app/model"
+	"github.com/soopsio/kitty/app/service"
 )
 
 type JobInfoController struct {
@@ -13,7 +13,7 @@ type JobInfoController struct {
 }
 
 // 查询任务列表
-func (this *JobInfoController)List() {
+func (this *JobInfoController) List() {
 
 	pageNo, _ := this.GetInt("pageNo", 1)
 	pageSize, _ := this.GetInt("pageSize", 10)
@@ -22,10 +22,9 @@ func (this *JobInfoController)List() {
 	groupName := this.GetString("GroupName")
 	infos, _ := service.JobInfoService.FindJobInfoListByPage(pageNo, pageSize, jobName, groupName)
 
-	count, _ := service.JobInfoService.FindJobInfoCountByState(0, jobName, groupName);
+	count, _ := service.JobInfoService.FindJobInfoCountByState(0, jobName, groupName)
 
-
-	pager := &common.Pager{PageNo:pageNo, PageSize:pageSize}
+	pager := &common.Pager{PageNo: pageNo, PageSize: pageSize}
 	pager.SetTotalCount(count)
 	pager.Data = infos
 
@@ -36,14 +35,14 @@ func (this *JobInfoController)List() {
 }
 
 // 跳转到新增任务页面
-func (this *JobInfoController)ToAdd() {
+func (this *JobInfoController) ToAdd() {
 
 	this.TplName = "jobinfo/add.html"
 
 }
 
 // 新增任务job
-func (this *JobInfoController)Add() {
+func (this *JobInfoController) Add() {
 	result := common.Result{}
 
 	//
@@ -90,10 +89,8 @@ func (this *JobInfoController)Add() {
 	}
 }
 
-
-
 // 修改
-func (this *JobInfoController)Edit() {
+func (this *JobInfoController) Edit() {
 
 	//
 	if this.Ctx.Request.Method == "POST" {
@@ -120,7 +117,7 @@ func (this *JobInfoController)Edit() {
 
 			info, err := service.JobInfoService.FindJobInfoById(id)
 			if err != nil {
-				result.Message = "此任务不存在!";
+				result.Message = "此任务不存在!"
 				this.WriteJson(result)
 			}
 
@@ -131,14 +128,14 @@ func (this *JobInfoController)Edit() {
 			info.Remark = remark
 			job.JobManager.ModifyJob(&info)
 
-			err = service.JobInfoService.UpdateJobInfo(id, url, cron, params, phone, remark);
+			err = service.JobInfoService.UpdateJobInfo(id, url, cron, params, phone, remark)
 			if err != nil {
 				result.Message = "更新失败,请重试!"
 				this.WriteJson(result)
 
 			} else {
 				result.Success = true
-				result.Message = "更新成功!";
+				result.Message = "更新成功!"
 				this.WriteJson(result)
 			}
 		}
@@ -146,17 +143,15 @@ func (this *JobInfoController)Edit() {
 	} else {
 		// GET
 
-
 		id, _ := this.GetInt("id")
 		jobInfo, err := service.JobInfoService.FindJobInfoById(id)
 		if err != nil {
-			this.TplName = "500.html";
-
+			this.TplName = "500.html"
 
 		} else {
 
 			this.Data["jobInfo"] = jobInfo
-			this.TplName = "jobinfo/edit.html";
+			this.TplName = "jobinfo/edit.html"
 		}
 
 	}
@@ -164,26 +159,26 @@ func (this *JobInfoController)Edit() {
 }
 
 // 详情
-func (this *JobInfoController)Info() {
+func (this *JobInfoController) Info() {
 
 	id, _ := this.GetInt("id")
 	jobInfo, err := service.JobInfoService.FindJobInfoById(id)
 	if err != nil {
-		this.TplName = "500.html";
-
+		this.TplName = "500.html"
 
 	} else {
 
 		this.Data["jobInfo"] = jobInfo
-		this.TplName = "jobinfo/info.html";
+		this.TplName = "jobinfo/info.html"
 	}
 
 }
+
 // 删除
-func (this *JobInfoController)Delete() {
+func (this *JobInfoController) Delete() {
 	result := common.Result{}
 
-	id, _ := this.GetInt("Id");
+	id, _ := this.GetInt("Id")
 
 	jobInfo, err := service.JobInfoService.FindJobInfoById(id)
 
@@ -204,10 +199,9 @@ func (this *JobInfoController)Delete() {
 	this.WriteJson(result)
 }
 
-
 // 激活或者取消激活
 
-func (this *JobInfoController)Active() {
+func (this *JobInfoController) Active() {
 	result := common.Result{}
 	active, _ := this.GetInt("active")
 	id, _ := this.GetInt("id")
@@ -215,8 +209,8 @@ func (this *JobInfoController)Active() {
 	jobInfo, err := service.JobInfoService.FindJobInfoById(id)
 	if err != nil {
 
-		job.JobManager.RemoveJob(model.JobInfo{Id:id})
-		result.Message = "此任务不存在!";
+		job.JobManager.RemoveJob(model.JobInfo{Id: id})
+		result.Message = "此任务不存在!"
 	} else {
 
 		if active == 1 {
@@ -228,7 +222,7 @@ func (this *JobInfoController)Active() {
 				result.Message = "成功"
 				result.Success = true
 			} else {
-				result.Message = "激活失败请重试!";
+				result.Message = "激活失败请重试!"
 
 			}
 
@@ -237,12 +231,12 @@ func (this *JobInfoController)Active() {
 
 			err = service.JobInfoService.UpdateJobActive(id, active)
 			if err == nil {
-				job.JobManager.RemoveJob(model.JobInfo{Id:id})
+				job.JobManager.RemoveJob(model.JobInfo{Id: id})
 
 				result.Message = "成功"
 				result.Success = true
 			} else {
-				result.Message = "取消激活失败请重试!";
+				result.Message = "取消激活失败请重试!"
 
 			}
 
@@ -260,7 +254,7 @@ type HomeController struct {
 
 func (this *HomeController) Index() {
 
-	this.TplName = "index.html";
+	this.TplName = "index.html"
 }
 
 type JobSanpshotController struct {
@@ -268,7 +262,7 @@ type JobSanpshotController struct {
 }
 
 // 查询任务执行快照列表
-func (this *JobSanpshotController)List() {
+func (this *JobSanpshotController) List() {
 
 	pageNo, _ := this.GetInt("pageNo", 1)
 	pageSize, _ := this.GetInt("pageSize", 10)
@@ -279,13 +273,13 @@ func (this *JobSanpshotController)List() {
 
 	snapshotList, err := service.JobSnapshotService.FindJobSnapshotInfoListByPage(pageNo, pageSize, jobName, groupName, state)
 
-	count, _ := service.JobSnapshotService.FindJobSnapshotCount(jobName, groupName, state);
+	count, _ := service.JobSnapshotService.FindJobSnapshotCount(jobName, groupName, state)
 	if err != nil {
 
 		this.TplName = "500.html"
 	} else {
 
-		pager := &common.Pager{PageNo:pageNo, PageSize:pageSize}
+		pager := &common.Pager{PageNo: pageNo, PageSize: pageSize}
 		pager.SetTotalCount(count)
 		pager.Data = snapshotList
 		this.Data["pager"] = pager
@@ -298,10 +292,8 @@ func (this *JobSanpshotController)List() {
 
 }
 
-
-
 // 查询详情
-func (this *JobSanpshotController)Info() {
+func (this *JobSanpshotController) Info() {
 	id, _ := this.GetInt("id")
 
 	jobSnapshot, err := service.JobSnapshotService.FindJobSnapshotById(id, 0)
@@ -310,12 +302,12 @@ func (this *JobSanpshotController)Info() {
 		this.TplName = "500.html"
 	} else {
 		this.Data["jobSnapshot"] = jobSnapshot
-		this.TplName = "jobsanpshot/info.html"
+		this.TplName = "jobsnapshot/info.html"
 	}
 
 }
 
-func (this *JobSanpshotController)Delete() {
+func (this *JobSanpshotController) Delete() {
 
 	result := common.Result{}
 	id, _ := this.GetInt("Id", -1)
@@ -326,13 +318,13 @@ func (this *JobSanpshotController)Delete() {
 	}
 
 	_, err := service.JobSnapshotService.FindJobSnapshotById(id, 0)
-	if err != nil  {
+	if err != nil {
 		result.Message = "此任务不存在!"
 		this.WriteJson(result)
 
 	}
 
-	err = service.JobSnapshotService.DeleteJobSnapshotById(id);
+	err = service.JobSnapshotService.DeleteJobSnapshotById(id)
 
 	if err != nil {
 
@@ -353,7 +345,7 @@ type MonitorController struct {
 }
 
 // 监控
-func (this *MonitorController)List() {
+func (this *MonitorController) List() {
 
 	list, _ := job.JobManager.List()
 

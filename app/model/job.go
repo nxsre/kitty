@@ -32,11 +32,10 @@ type JobInfoHistory struct {
 	UpdateTime time.Time // 任务更新时间
 }
 
-
 // 任务快照
 type JobSnapshot struct {
 	Id          int       // 主键
-	JobId      int	     // 任务id
+	JobId       int       // 任务id
 	JobName     string    // 任务名称
 	JobGroup    string    //  任务分组
 	Params      string    // 参数
@@ -54,6 +53,7 @@ type JobSnapshot struct {
 // 任务快照历史
 type JobSnapshotHistory struct {
 	Id          int       // 主键
+	JobId       int       // 任务id
 	JobName     string    // 任务名称
 	JobGroup    string    // 任务分组
 	Params      string    // 参数
@@ -67,4 +67,3 @@ type JobSnapshotHistory struct {
 	CreateTime  time.Time // 任务创建时间
 	UpdateTime  time.Time // 任务更新时间
 }
-

@@ -1,15 +1,16 @@
 package job
 
 import (
-	"github.com/shotdog/quartz"
-	"kitty/app/service"
-	"time"
-	"kitty/app/model"
+	"bytes"
+	"encoding/json"
 	"log"
 	"net/http"
-	"encoding/json"
-	"kitty/app/common"
-	"bytes"
+	"time"
+
+	"github.com/shotdog/quartz"
+	"github.com/soopsio/kitty/app/common"
+	"github.com/soopsio/kitty/app/model"
+	"github.com/soopsio/kitty/app/service"
 )
 
 var JobManager *jobManager
@@ -24,12 +25,12 @@ func NewJobManager() {
 
 		qz := quartz.New()
 		qz.BootStrap()
-		JobManager = &jobManager{qz:qz}
+		JobManager = &jobManager{qz: qz}
 	}
 
 }
 
-func (this *jobManager)PushAllJob() {
+func (this *jobManager) PushAllJob() {
 
 	list, err := service.JobInfoService.List()
 	if err != nil || len(list) == 0 {
@@ -44,44 +45,42 @@ func (this *jobManager)PushAllJob() {
 
 }
 
-func (this *jobManager)AddJob(jobInfo model.JobInfo) error {
+func (this *jobManager) AddJob(jobInfo model.JobInfo) error {
 
 	return this.qz.AddJob(&quartz.Job{
-		Id:jobInfo.Id,
-		Name:jobInfo.JobName,
-		Group:jobInfo.JobGroup,
-		Url:jobInfo.Url,
-		Params:jobInfo.Params,
-		Expression:jobInfo.Cron,
-		JobFunc:invoke,
-
+		Id:         jobInfo.Id,
+		Name:       jobInfo.JobName,
+		Group:      jobInfo.JobGroup,
+		Url:        jobInfo.Url,
+		Params:     jobInfo.Params,
+		Expression: jobInfo.Cron,
+		JobFunc:    invoke,
 	})
 
 }
 
 // modify
-func (this *jobManager)ModifyJob(jobInfo *model.JobInfo) error {
+func (this *jobManager) ModifyJob(jobInfo *model.JobInfo) error {
 
 	return this.qz.ModifyJob(&quartz.Job{
-		Id:jobInfo.Id,
-		Name:jobInfo.JobName,
-		Group:jobInfo.JobGroup,
-		Url:jobInfo.Url,
-		Params:jobInfo.Params,
-		Expression:jobInfo.Cron,
-		JobFunc:invoke,
-
+		Id:         jobInfo.Id,
+		Name:       jobInfo.JobName,
+		Group:      jobInfo.JobGroup,
+		Url:        jobInfo.Url,
+		Params:     jobInfo.Params,
+		Expression: jobInfo.Cron,
+		JobFunc:    invoke,
 	})
 }
 
 // remove
-func (this *jobManager)RemoveJob(jobInfo model.JobInfo) error {
+func (this *jobManager) RemoveJob(jobInfo model.JobInfo) error {
 
 	return this.qz.RemoveJob(jobInfo.Id)
 
 }
 
-func (this *jobManager)List() ([]*quartz.Job, error) {
+func (this *jobManager) List() ([]*quartz.Job, error) {
 
 	return this.qz.SnapshotJob()
 }
@@ -93,8 +92,6 @@ func invoke(jobId int, targetUrl, params string, nextTime time.Time) {
 		return
 	}
 
-	//
-
 	initExecute(jobInfo, targetUrl, nextTime)
 
 }
@@ -103,15 +100,15 @@ func invoke(jobId int, targetUrl, params string, nextTime time.Time) {
 func initExecute(jobInfo model.JobInfo, targetUrl string, nextTime time.Time) {
 
 	snapshot := &model.JobSnapshot{
-		JobName:jobInfo.JobName,
-		JobGroup:jobInfo.JobGroup,
-		Cron:jobInfo.Cron,
-		Url:jobInfo.Url,
-		JobId:jobInfo.Id,
-		Detail:"【" + time.Now().Format("2006-01-02 15:04:05") + "】初始化完成目标服务器:" + targetUrl,
-		CreateTime:time.Now(),
-		State:0,
-
+		JobName:    jobInfo.JobName,
+		JobGroup:   jobInfo.JobGroup,
+		Cron:       jobInfo.Cron,
+		Url:        jobInfo.Url,
+		Params:     jobInfo.Params,
+		JobId:      jobInfo.Id,
+		Detail:     "【" + time.Now().Format("2006-01-02 15:04:05") + "】初始化完成目标服务器:" + targetUrl,
+		CreateTime: time.Now(),
+		State:      0,
 	}
 
 	err := service.JobSnapshotService.Add(snapshot)
@@ -134,17 +131,16 @@ func invokeJob(snapshot *model.JobSnapshot) {
 	}
 
 	req := common.Request{
-		SnapshotId:snapshot.Id,
-		JobId:snapshot.JobId,
-		Params     :snapshot.Params,
-		Method     :"INVOKE",
+		SnapshotId: snapshot.Id,
+		JobId:      snapshot.JobId,
+		Params:     snapshot.Params,
+		Method:     "INVOKE",
 	}
 	body, _ := json.Marshal(req)
-
 	res, err := http.Post(snapshot.Url, "application/json;charset=utf-8", bytes.NewReader(body))
 	if err != nil {
 
-		detail = detail + "\n【" + time.Now().Format("2006-01-02 15:04:05") + "】目标服务器不可用..."
+		detail = detail + "\n【" + time.Now().Format("2006-01-02 15:04:05") + "】目标服务器不可用..." + err.Error()
 		service.JobSnapshotService.Update(snapshot.Id, 4, detail, time.Now(), "", 0)
 		return
 
@@ -156,18 +152,18 @@ func invokeJob(snapshot *model.JobSnapshot) {
 		body := common.Response{}
 		err = json.Unmarshal(bys[:n], &body)
 		if err != nil {
-			detail = detail + "\n【" + time.Now().Format("2006-01-02 15:04:05") + "】目标服务器不可用..."
+			detail = detail + "\n【" + time.Now().Format("2006-01-02 15:04:05") + "】目标服务器不可用..." + err.Error()
 			service.JobSnapshotService.Update(snapshot.Id, 4, detail, time.Now(), "", 0)
 			return
 		} else {
 
 			if body.State == 4 {
-				detail = detail + "\n【" + time.Now().Format("2006-01-02 15:04:05") + "】目标服务器任务执行失败..."
+				detail = detail + "\n【" + time.Now().Format("2006-01-02 15:04:05") + "】目标服务器任务执行失败..." + err.Error()
 				service.JobSnapshotService.Update(snapshot.Id, 4, detail, time.Now(), "", 0)
 				return
 			} else if body.State == 2 {
 
-				detail = detail + "\n【" + time.Now().Format("2006-01-02 15:04:05") + "】目标服务器任务正在执行..."
+				detail = detail + "\n【" + time.Now().Format("2006-01-02 15:04:05") + "】目标服务器任务正在执行..." + err.Error()
 				service.JobSnapshotService.Update(snapshot.Id, 2, detail, time.Now(), "", 0)
 				snapshot.Detail = detail
 				checkExecutionJob(snapshot)
@@ -188,10 +184,10 @@ func checkExecutionJob(snapshot *model.JobSnapshot) {
 		case <-time.After(time.Second * 10):
 			log.Println("**********任务检查**********", snapshot.Id, snapshot.JobId)
 			req := common.Request{
-				SnapshotId:snapshot.Id,
-				JobId:snapshot.JobId,
-				Params     :snapshot.Params,
-				Method     :"CHECK",
+				SnapshotId: snapshot.Id,
+				JobId:      snapshot.JobId,
+				Params:     snapshot.Params,
+				Method:     "CHECK",
 			}
 
 			body, _ := json.Marshal(req)
@@ -199,7 +195,7 @@ func checkExecutionJob(snapshot *model.JobSnapshot) {
 			res, err := http.Post(snapshot.Url, "application/json;charset=utf-8", bytes.NewReader(body))
 			if err != nil {
 
-				detail = detail + "\n【" + time.Now().Format("2006-01-02 15:04:05") + "】目标服务器不可用..."
+				detail = detail + "\n【" + time.Now().Format("2006-01-02 15:04:05") + "】目标服务器不可用..." + err.Error()
 				service.JobSnapshotService.Update(snapshot.Id, 4, detail, time.Now(), "", 0)
 				return
 
@@ -211,7 +207,7 @@ func checkExecutionJob(snapshot *model.JobSnapshot) {
 				response := common.Response{}
 				err = json.Unmarshal(bys[:n], &response)
 				if err != nil {
-					detail = detail + "\n【" + time.Now().Format("2006-01-02 15:04:05") + "】目标服务器不可用..."
+					detail = detail + "\n【" + time.Now().Format("2006-01-02 15:04:05") + "】目标服务器不可用..." + err.Error()
 					service.JobSnapshotService.Update(snapshot.Id, 4, detail, time.Now(), "", 0)
 					return
 				} else {
@@ -237,5 +233,4 @@ func checkExecutionJob(snapshot *model.JobSnapshot) {
 }
 
 type JobInvoker struct {
-
 }
